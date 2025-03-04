@@ -6,71 +6,136 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS             "${CMAKE_CXX_FLAGS} -Wunused-parameter -Wextra -Wreorder -Wa,-mbig-obj -O2")
+set(CMAKE_CXX_STANDARD          23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC               ON)
+set(CMAKE_AUTOUIC               ON)
+set(CMAKE_AUTORCC               ON)
+set(CMAKE_INCLUDE_CURRENT_DIR   ON)
+set(WIN32_EXECUTABLE            OFF)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets SerialPort)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort)
-
-set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
+find_package(Qt6 REQUIRED COMPONENTS
+    SerialPort
+    Widgets
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(StepperMotors
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-        portnamecombobox.h portnamecombobox.cpp
-        toggledpushbutton.h toggledpushbutton.cpp
-        serialport.h serialport.cpp
-        arduinoserialport.h arduinoserialport.cpp
-        arduino.h arduino.cpp
-        baudratecombobox.h baudratecombobox.cpp
-        mainwindow_ui.h mainwindow_ui.cpp
-    )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET StepperMotors APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+############################################### Сборка исходников ###############################################
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin)
+set(LIB_ROOT                        ${PROJECT_SOURCE_DIR}/lib)
+set(SOURCE_ROOT                     ${PROJECT_SOURCE_DIR}/src)
+set(ICONS_ROOT                      icons)
+
+file(GLOB HEADERS ${SOURCE_ROOT}/*.h ${SOURCE_ROOT}/*/*.h)
+file(GLOB SOURCES ${SOURCE_ROOT}/*.cpp ${SOURCE_ROOT}/*/*.cpp)
+
+qt_add_executable(${PROJECT_NAME}
+    WIN32
+    ${HEADERS}
+    ${SOURCES}
+)
+qt_add_resources(${PROJECT_NAME} "images"
+    PREFIX "/"
+    FILES
+        ${ICONS_ROOT}/arrow.png
+        ${ICONS_ROOT}/central.png
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${SOURCE_ROOT}
+    ${SOURCE_ROOT}/connection
+    ${SOURCE_ROOT}/ui
+    ${SOURCE_ROOT}/widgets
+    ${SOURCE_ROOT}/wrappers
+)
+
+#################################################################################################################
+
+############################################ Подключение бибилиотек #############################################
+
+set(QWT_ROOT ${LIB_ROOT}/qwt-6.3.0)
+add_library(qwt SHARED IMPORTED)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set_property(TARGET qwt PROPERTY IMPORTED_LOCATION ${QWT_ROOT}/lib/qwtd.dll)
+    set_property(TARGET qwt PROPERTY IMPORTED_IMPLIB ${QWT_ROOT}/lib/qwtd.dll)
 else()
-    if(ANDROID)
-        add_library(StepperMotors SHARED
-            ${PROJECT_SOURCES}
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(StepperMotors
-            ${PROJECT_SOURCES}
-        )
-    endif()
+    set_property(TARGET qwt PROPERTY IMPORTED_LOCATION ${QWT_ROOT}/lib/qwt.dll)
+    set_property(TARGET qwt PROPERTY IMPORTED_IMPLIB ${QWT_ROOT}/lib/qwt.dll)
 endif()
-
-target_link_libraries(StepperMotors PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::SerialPort)
-
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.StepperMotors)
-endif()
-set_target_properties(StepperMotors PROPERTIES
-    ${BUNDLE_ID_OPTION}
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${QWT_ROOT}/include
 )
 
-include(GNUInstallDirs)
-install(TARGETS StepperMotors
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+target_link_libraries(${PROJECT_NAME} PRIVATE
+	Qt${QT_VERSION_MAJOR}::SerialPort
+    Qt${QT_VERSION_MAJOR}::Widgets
+    qwt
 )
+
+#################################################################################################################
+
+############################################# Установка dll-файлов ##############################################
+
+set(QT_DLL_PATH C:/Qt/6.7.2/mingw_64)
+
+install(FILES
+    ${QWT_ROOT}/lib/qwt.dll
+    ${QWT_ROOT}/lib/qwtd.dll
+    ${QT_DLL_PATH}/bin/d3dcompiler_47.dll
+    ${QT_DLL_PATH}/bin/libgcc_s_seh-1.dll
+    ${QT_DLL_PATH}/bin/libstdc++-6.dll
+    ${QT_DLL_PATH}/bin/libwinpthread-1.dll
+    ${QT_DLL_PATH}/bin/opengl32sw.dll
+    ${QT_DLL_PATH}/bin/Qt6Concurrent.dll
+    ${QT_DLL_PATH}/bin/Qt6Core.dll
+    ${QT_DLL_PATH}/bin/Qt6Core5Compat.dll
+    ${QT_DLL_PATH}/bin/Qt6DataVisualization.dll
+    ${QT_DLL_PATH}/bin/Qt6Gui.dll
+    ${QT_DLL_PATH}/bin/Qt6Network.dll
+    ${QT_DLL_PATH}/bin/Qt6OpenGL.dll
+    ${QT_DLL_PATH}/bin/Qt6OpenGLWidgets.dll
+    ${QT_DLL_PATH}/bin/Qt6PrintSupport.dll
+    ${QT_DLL_PATH}/bin/Qt6Qml.dll
+    ${QT_DLL_PATH}/bin/Qt6QmlModels.dll
+    ${QT_DLL_PATH}/bin/Qt6Quick.dll
+    ${QT_DLL_PATH}/bin/Qt6SerialPort.dll
+    ${QT_DLL_PATH}/bin/Qt6Svg.dll
+    ${QT_DLL_PATH}/bin/Qt6Widgets.dll
+DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+install(FILES
+    ${QT_DLL_PATH}/plugins/iconengines/qsvgicon.dll
+DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/iconengines)
+
+install(FILES
+    ${QT_DLL_PATH}/plugins/imageformats/qgif.dll
+    ${QT_DLL_PATH}/plugins/imageformats/qico.dll
+    ${QT_DLL_PATH}/plugins/imageformats/qjpeg.dll
+    ${QT_DLL_PATH}/plugins/imageformats/qsvg.dll
+DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageformats)
+
+install(FILES
+    ${QT_DLL_PATH}/plugins/platforms/qwindows.dll
+DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/platforms)
+
+install(FILES
+    ${QT_DLL_PATH}/plugins/styles/qmodernwindowsstyle.dll
+    DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/styles)
+
+install(FILES
+    ${QT_DLL_PATH}/plugins/tls/qcertonlybackend.dll
+    ${QT_DLL_PATH}/plugins/tls/qopensslbackend.dll
+    ${QT_DLL_PATH}/plugins/tls/qschannelbackend.dll
+DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tls)
+
+file(GLOB TRANSLATIONS
+    ${QT_DLL_PATH}/translations/*.qm
+)
+install(FILES ${TRANSLATIONS} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/translations)
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(StepperMotors)
+    qt_finalize_executable(${PROJECT_NAME})
 endif()
+
+#################################################################################################################
