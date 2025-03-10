@@ -13,10 +13,11 @@ public:
     void load();
     void save();
 
-    void setDistanceInDsc(const Qt::Axis axis, const Position dsc) noexcept;
-    void setDistanceInUm(const Qt::Axis axis, const double um) noexcept;
     [[nodiscard]] Position distanceInDsc(const Qt::Axis axis) const noexcept;
     [[nodiscard]] double distanceInUm(const Qt::Axis axis) const noexcept;
+    [[nodiscard]] double distanceStep() const noexcept;
+    void setDistanceInDsc(const Qt::Axis axis, const Position dsc) noexcept;
+    void setDistanceInUm(const Qt::Axis axis, const double um) noexcept;
 
 private:
     static inline std::array<Coefficient, 3> coefficients_ = {};

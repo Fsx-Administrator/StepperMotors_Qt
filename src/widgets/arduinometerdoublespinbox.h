@@ -1,5 +1,6 @@
 #pragma once
 
+#include "arduinowithsteppers.h"
 #include "meterdoublespinbox.h"
 
 
@@ -14,6 +15,7 @@ public:
         setMinPrefix(MetricPrefixes::Micro);
         setCurrentPrefix(MetricPrefixes::Milli);
         setMainPrefix(MetricPrefixes::Micro);
+        setMainValueStep(ArduinoWithSteppers::instance().step());
     }
     ~ArduinoMeterDoubleSpinBox() noexcept = default;
 

@@ -3,7 +3,6 @@
 
 #include <concepts>
 #include <functional>
-#include <limits>
 
 
 template<class T>
@@ -20,8 +19,3 @@ template<class T>
 concept Functor = requires(T t) { t(); };
 
 using Slot = std::function<void()>;
-
-[[nodiscard]] constexpr bool isEqualToZero(const std::floating_point auto value)
-{
-    return (std::numeric_limits<double>::epsilon() >= value);
-}

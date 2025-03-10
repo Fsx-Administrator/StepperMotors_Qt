@@ -17,4 +17,5 @@ DebugWindow_Ui::DebugWindow_Ui(DebugWindow *parent)
     parent->setCentralWidget(widget);
 
     parent->setWindowFlag(Qt::MSWindowsFixedSizeDialogHint);
+    parent->setWindowTitle("Debug Console");
 }

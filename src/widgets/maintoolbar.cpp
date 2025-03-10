@@ -14,7 +14,10 @@ MainToolBar::MainToolBar(QWidget *parent) noexcept
         "Disconnect",
         "Connect",
         [this]() -> void {
-            ArduinoWithSteppers::instance().connect(portNameComboBox_->currentPortName());
+            ArduinoWithSteppers::instance().connect(
+                portNameComboBox_->currentPortName(),
+                baudRateComboBox_->currentBaudRate()
+            );
         },
         [this]() -> void {
             ArduinoWithSteppers::instance().disconnect();

@@ -26,16 +26,6 @@ void ArduinoParameters::save()
     IniFileStorage::save(_FILE_NAME_, sectionsMap);
 }
 
-void ArduinoParameters::setDistanceInDsc(const Qt::Axis axis, const Position dsc) noexcept
-{
-    positions_[axis] = dsc;
-}
-
-void ArduinoParameters::setDistanceInUm(const Qt::Axis axis, const double um) noexcept
-{
-    positions_[axis] = um / coefficients_[axis];
-}
-
 ArduinoParameters::Position ArduinoParameters::distanceInDsc(const Qt::Axis axis) const noexcept
 {
     return positions_[axis];
@@ -44,4 +34,19 @@ ArduinoParameters::Position ArduinoParameters::distanceInDsc(const Qt::Axis axis
 double ArduinoParameters::distanceInUm(const Qt::Axis axis) const noexcept
 {
     return positions_[axis] * coefficients_[axis];
+}
+
+double ArduinoParameters::distanceStep() const noexcept
+{
+    return *std::ranges::min_element(coefficients_);
+}
+
+void ArduinoParameters::setDistanceInDsc(const Qt::Axis axis, const Position dsc) noexcept
+{
+    positions_[axis] = dsc;
+}
+
+void ArduinoParameters::setDistanceInUm(const Qt::Axis axis, const double um) noexcept
+{
+    positions_[axis] = static_cast<Position>(std::round(um / coefficients_[axis]));
 }

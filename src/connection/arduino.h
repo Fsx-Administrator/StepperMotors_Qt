@@ -26,6 +26,7 @@ public:
         return instance_;
     }
     void sendMessage(const QString &message);
+    void setErrorHandling(const bool on) noexcept;
     void setReadyRecieved(const bool ready) noexcept;
 
 signals:
@@ -40,6 +41,8 @@ protected:
     Arduino(Arduino &&) = delete;
     Arduino &operator=(const Arduino &) = delete;
     Arduino &operator=(Arduino &&) = delete;
+
+    virtual void errorHandler(const QString &error);
 
     std::unique_ptr<ArduinoSerialPort> serialPort_;
 

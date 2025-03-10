@@ -1,31 +1,52 @@
 #include "knobwidget.h"
 
-#include <QGridLayout>
 #include <QPushButton>
 
 
 KnobWidget::KnobWidget(QWidget *parent) noexcept
-    : QWidget(parent)
-    , knobPushButtons_()
+    : TileWidget(parent)
+{}
+
+void KnobWidget::setButton(const Place place, Slot slot) noexcept
 {
-    std::ranges::generate(knobPushButtons_, [this, i = 0]() mutable -> auto {
-        return new KnobPushButton(static_cast<KnobPushButton::Type>(i++), this);
-    });
+    switch (place)
+    {
+    case TileWidget::Place::BottomLeft:
+    case TileWidget::Place::TopLeft:
+    case TileWidget::Place::TopRight:
+        return;
 
-    QGridLayout *layout = new QGridLayout(this);
-    layout->addWidget(knobPushButtons_[std::to_underlying(KnobPushButton::Type::Up)], 0, 1);
-    layout->addWidget(knobPushButtons_[std::to_underlying(KnobPushButton::Type::Left)], 1, 0);
-    layout->addWidget(knobPushButtons_[std::to_underlying(KnobPushButton::Type::Central)], 1, 1);
-    layout->addWidget(knobPushButtons_[std::to_underlying(KnobPushButton::Type::Right)], 1, 2);
-    layout->addWidget(knobPushButtons_[std::to_underlying(KnobPushButton::Type::Down)], 2, 1);
-    setLayout(layout);
+    default:
+        break;
+    }
 
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    TileWidget::setButton(place, slot);
+    button(place)->setIcon(knobIcon(place));
 }
 
-void KnobWidget::registerSlot(const KnobPushButton::Type type, Slot slot) noexcept
+QIcon KnobWidget::knobIcon(const Place place) const noexcept
 {
-    auto button = knobPushButtons_[std::to_underlying(type)];
-    disconnect(button, &QPushButton::clicked, nullptr, nullptr);
-    connect(button, &QPushButton::clicked, this, [slot]() -> void { slot(); });
+    switch (place)
+    {
+    case TileWidget::Place::Top:
+        return QIcon(":/icons/arrow_up.png");
+
+    case TileWidget::Place::Left:
+        return QIcon(":/icons/arrow_left.png");
+
+    case TileWidget::Place::Central:
+        return QIcon(":/icons/central.png");
+
+    case TileWidget::Place::Right:
+        return QIcon(":/icons/arrow_right.png");
+
+    case TileWidget::Place::Bottom:
+        return QIcon(":/icons/arrow_down.png");
+
+    case TileWidget::Place::BottomRight:
+        return QIcon(":/icons/calibrate.png");
+
+    default:
+        return QIcon();
+    }
 }

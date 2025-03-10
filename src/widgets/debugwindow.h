@@ -6,7 +6,7 @@
 
 class DebugWindow_Ui;
 
-class DebugWindow : public QMainWindow
+class DebugWindow final : public QMainWindow
 {
     Q_OBJECT
 

@@ -1,5 +1,6 @@
 #include "arduinowithsteppers.h"
 
+#include <QDebug>
 #include <QPointF>
 
 
@@ -43,9 +44,13 @@ void ArduinoWithSteppers::stop()
 
 void ArduinoWithSteppers::recieveDistance(const QByteArray &message)
 {
-    QString messageString = QString(message);
+    static QString messageString = QString();
+    messageString += QString(message);
+    if (!messageString.endsWith(';'))
+        return;
 
-    if (message[0] == GetPosition)
+    messageString = messageString.section(";", -2);
+    if (message[0] == GetPosition && message.size() > 6)
     {
         const auto list = messageString.sliced(1, message.size() - 2).split(',');
         parameters_.setDistanceInDsc(Qt::XAxis, list[Qt::XAxis].toInt());
@@ -57,6 +62,8 @@ void ArduinoWithSteppers::recieveDistance(const QByteArray &message)
             parameters_.distanceInUm(Qt::YAxis)
         ));
     }
+
+    messageString.clear();
 }
 
 ArduinoWithSteppers::ArduinoWithSteppers() noexcept

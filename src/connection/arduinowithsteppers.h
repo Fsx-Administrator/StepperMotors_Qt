@@ -24,6 +24,7 @@ public:
         return instance_;
     }
     void move(const double distance, const Direction direction);
+    [[nodiscard]] inline double step() const noexcept { return parameters_.distanceStep(); }
     void stop();
 
 signals:

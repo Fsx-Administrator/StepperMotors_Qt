@@ -26,6 +26,5 @@ public:
     QPointer<DistanceValueWidget> distanceValueWidget;
     QPointer<KnobWidget> knobWidget;
     QPointer<MoveTrackerWidget> moveTrackerWidget;
-    QPointer<QPushButton> calibratePushButton;
 
 };

@@ -3,13 +3,19 @@
 #include "common.h"
 
 #include <QSerialPort>
+#include <QVariant>
 
 
 class SerialPortException : public std::runtime_error
 {
 
 public:
-    SerialPortException(const QString &message) : std::runtime_error(message.toStdString()) {};
+    SerialPortException(const QString &message)
+        : std::runtime_error(message.toStdString())
+    {};
+    SerialPortException(const QSerialPort::SerialPortError error)
+        : std::runtime_error(QVariant::fromValue(error).toString().toStdString())
+    {};
 
 };
 
@@ -62,5 +68,8 @@ public:
     {
         send(&data, sizeof(data));
     }
+
+signals:
+    void errorOccured(const QString &error);
 
 };

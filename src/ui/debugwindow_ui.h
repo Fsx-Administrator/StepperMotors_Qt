@@ -10,6 +10,7 @@ class DebugWindow;
 
 class DebugWindow_Ui
 {
+
 public:
     explicit DebugWindow_Ui(DebugWindow *parent);
     ~DebugWindow_Ui() noexcept = default;

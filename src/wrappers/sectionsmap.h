@@ -7,7 +7,7 @@
 #include <QVariant>
 
 
-class SettingsMap : public QMap<QString, QVariant>
+class SettingsMap final : public QMap<QString, QVariant>
 {
 
 public:
@@ -45,7 +45,7 @@ public:
 };
 
 
-class SectionsMap : public QMap<QString, SettingsMap>
+class SectionsMap final : public QMap<QString, SettingsMap>
 {
 
 public:

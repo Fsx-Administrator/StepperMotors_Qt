@@ -15,7 +15,6 @@ DebugWindow::DebugWindow(QWidget *parent) noexcept
     });
     connect(&ArduinoWithSteppers::instance(), &Arduino::messageRecieved, ui->console, &DebugConsole::appendAnswer);
     connect(&ArduinoWithSteppers::instance(), &Arduino::connected, this, [this](const bool successfully) -> void {
-        qDebug() << "here";
         if (successfully)
             ui->console->appendConnectSection();
         else

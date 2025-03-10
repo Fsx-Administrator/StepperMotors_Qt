@@ -21,11 +21,13 @@ public:
     inline void setMaxPrefix(const MetricPrefixes prefix) noexcept { maxPrefix_ = prefix; }
     inline void setMainPrefix(const MetricPrefixes prefix) noexcept { mainPrefix_ = prefix; }
     void setMainValue(const double value) noexcept;
+    inline void setMainValueStep(const double step) noexcept { valueStep_ = step; }
     void setMetricSuffix(const QString &suffix) noexcept;
     void setMetricValue(const double metricValue) noexcept;
     inline void setMinPrefix(const MetricPrefixes prefix) noexcept { minPrefix_ = prefix; }
 
 private:
+    [[nodiscard]] double mainStep() const noexcept;
     void setMaxMetricValue() noexcept;
     void setMetricSuffix() noexcept;
 
@@ -38,6 +40,7 @@ private:
     MetricPrefixes mainPrefix_;
     MetricPrefixes minPrefix_;
     double maxValue_;
+    double valueStep_;
 
 };
 

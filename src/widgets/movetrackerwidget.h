@@ -25,6 +25,7 @@ public:
     void move(const double step, const Direction dir) noexcept;
     void setAspectRatio(const double aspectRatio) noexcept;
     void setPosition(const QPointF &destination) noexcept;
+    void setRange(const QSizeF &size) noexcept;
 
 private:
     const QSize _MINIMUM_SIZE_;

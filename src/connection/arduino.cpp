@@ -14,17 +14,18 @@ void Arduino::connect(const QString &portName, const quint32 baudRate)
 
         serialPort_ = std::make_unique<ArduinoSerialPort>(portName, baudRate);
         setReadyRecieved(true);
-        emit connected(true);
+        setErrorHandling(true);
     }
     catch (const SerialPortException &exception)
     {
-        emit connected(false);
         qWarning() << exception.what();
     }
     catch (const ArduinoException &exception)
     {
         qWarning() << exception.what();
     }
+
+    emit connected(isConnected());
 }
 
 void Arduino::disconnect()
@@ -34,8 +35,11 @@ void Arduino::disconnect()
         if (!isConnected())
             throw ArduinoException("Arduino is not connected");
 
-        setReadyRecieved(false);
         serialPort_.reset();
+    }
+    catch (const SerialPortException &exception)
+    {
+        qWarning() << exception.what();
     }
     catch (const ArduinoException &exception)
     {
@@ -65,6 +69,14 @@ void Arduino::sendMessage(const QString &message)
     }
 }
 
+void Arduino::setErrorHandling(const bool on) noexcept
+{
+    if (on)
+        QObject::connect(serialPort_.get(), &SerialPort::errorOccured, this, &Arduino::errorHandler);
+    else
+        QObject::disconnect(serialPort_.get(), &SerialPort::errorOccured, nullptr, nullptr);
+}
+
 void Arduino::setReadyRecieved(const bool ready) noexcept
 {
     if (ready)
@@ -81,3 +93,9 @@ Arduino::Arduino() noexcept
 {}
 
 Arduino::~Arduino() noexcept {}
+
+void Arduino::errorHandler(const QString &error)
+{
+    if (error == "ResourceError")
+        disconnect();
+}

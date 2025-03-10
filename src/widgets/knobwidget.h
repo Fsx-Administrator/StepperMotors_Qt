@@ -1,12 +1,9 @@
 #pragma once
 
-#include "common.h"
-#include "knobpushbutton.h"
+#include "tilewidget.h"
+#include <qglobal.h>
 
-#include <QWidget>
-
-
-class KnobWidget : public QWidget
+class KnobWidget final : public TileWidget
 {
     Q_OBJECT
 
@@ -14,9 +11,9 @@ public:
     explicit KnobWidget(QWidget *parent = nullptr) noexcept;
     ~KnobWidget() noexcept = default;
 
-    void registerSlot(const KnobPushButton::Type type, Slot slot) noexcept;
+    void setButton(const Place place, Slot slot) noexcept override;
 
 private:
-    std::array<KnobPushButton *, 5> knobPushButtons_;
+    [[nodiscard]] QIcon knobIcon(const Place place) const noexcept;
 
 };

@@ -20,14 +20,15 @@ SerialPort::SerialPort(
     if (!open(ReadWrite))
         throw SerialPortException(errorString());
 
-    connect(this, &QSerialPort::errorOccurred, [this]([[maybe_unused]] SerialPortError error) -> void {
+    connect(this, &QSerialPort::errorOccurred, [this](SerialPortError error) -> void {
         try
         {
-            throw SerialPortException(errorString());
+            throw SerialPortException(error);
         }
         catch (const SerialPortException &exception)
         {
             qWarning() << exception.what();
+            emit errorOccured(exception.what());
         }
     });
 }

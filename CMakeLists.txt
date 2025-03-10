@@ -38,7 +38,11 @@ qt_add_executable(${PROJECT_NAME}
 qt_add_resources(${PROJECT_NAME} "images"
     PREFIX "/"
     FILES
-        ${ICONS_ROOT}/arrow.png
+        ${ICONS_ROOT}/arrow_left.png
+        ${ICONS_ROOT}/arrow_down.png
+        ${ICONS_ROOT}/arrow_right.png
+        ${ICONS_ROOT}/arrow_up.png
+        ${ICONS_ROOT}/calibrate.png
         ${ICONS_ROOT}/central.png
 )
 
@@ -68,7 +72,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-	Qt${QT_VERSION_MAJOR}::SerialPort
+    Qt${QT_VERSION_MAJOR}::SerialPort
     Qt${QT_VERSION_MAJOR}::Widgets
     qwt
 )
