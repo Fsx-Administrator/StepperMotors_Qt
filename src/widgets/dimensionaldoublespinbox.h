@@ -16,7 +16,7 @@ public:
     [[nodiscard]] double mainValue() const noexcept;
     [[nodiscard]] double metricValue(const MetricPrefixes metricPrefix) const noexcept;
     inline void setCurrentPrefix(const MetricPrefixes prefix) noexcept
-    { currentPrefix_ = (prefix > maxPrefix_) ? maxPrefix_ : prefix; }
+    { currentPrefix_ = (prefix > maxPrefix_) ? maxPrefix_ : prefix; setMetricSuffix(); }
     void setMaxMetricValue(const double value) noexcept;
     inline void setMaxPrefix(const MetricPrefixes prefix) noexcept { maxPrefix_ = prefix; }
     inline void setMainPrefix(const MetricPrefixes prefix) noexcept { mainPrefix_ = prefix; }

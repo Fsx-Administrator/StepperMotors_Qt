@@ -13,6 +13,9 @@ void ArduinoParameters::load()
     coefficients_[Qt::XAxis] = sectionsMap.get<Coefficient>("Coefficients", "x_nm_dsc");
     coefficients_[Qt::YAxis] = sectionsMap.get<Coefficient>("Coefficients", "y_nm_dsc");
     coefficients_[Qt::ZAxis] = sectionsMap.get<Coefficient>("Coefficients", "z_nm_dsc");
+    maxes_[Qt::XAxis] = sectionsMap.get<Position>("Max", "x");
+    maxes_[Qt::YAxis] = sectionsMap.get<Position>("Max", "y");
+    maxes_[Qt::ZAxis] = sectionsMap.get<Position>("Max", "z");
 }
 
 void ArduinoParameters::save()
@@ -33,7 +36,7 @@ ArduinoParameters::Position ArduinoParameters::distanceInDsc(const Qt::Axis axis
 
 double ArduinoParameters::distanceInUm(const Qt::Axis axis) const noexcept
 {
-    return positions_[axis] * coefficients_[axis];
+    return distanceInDsc(axis) * coefficients_[axis];
 }
 
 double ArduinoParameters::distanceStep() const noexcept
@@ -43,10 +46,15 @@ double ArduinoParameters::distanceStep() const noexcept
 
 void ArduinoParameters::setDistanceInDsc(const Qt::Axis axis, const Position dsc) noexcept
 {
-    positions_[axis] = dsc;
+    if (dsc < 0)
+        positions_[axis] = 0;
+    else if (dsc > maxes_[axis])
+        positions_[axis] = maxes_[axis];
+    else
+        positions_[axis] = dsc;
 }
 
 void ArduinoParameters::setDistanceInUm(const Qt::Axis axis, const double um) noexcept
 {
-    positions_[axis] = static_cast<Position>(std::round(um / coefficients_[axis]));
+    setDistanceInDsc(axis, static_cast<Position>(std::round(um / coefficients_[axis])));
 }

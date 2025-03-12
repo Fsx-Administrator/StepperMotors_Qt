@@ -52,19 +52,23 @@ void MoveTrackerWidget::move(const double step, const Direction dir) noexcept
     switch (dir)
     {
     case Direction::Down:
-        destination.ry() -= step;
+        if (destination.y() - step >= borderRect_.top())
+            destination.ry() -= step;
         break;
 
     case Direction::Left:
-        destination.rx() -= step;
+        if (destination.x() - step >= borderRect_.left())
+            destination.rx() -= step;
         break;
 
     case Direction::Right:
-        destination.rx() += step;
+        if (destination.x() + step <= borderRect_.right() - squareRect_.width())
+            destination.rx() += step;
         break;
 
     case Direction::Up:
-        destination.ry() += step;
+        if (destination.y() + step <= borderRect_.top() + (borderRect_.height() - squareRect_.height()))
+            destination.ry() += step;
         break;
     }
 
@@ -87,6 +91,7 @@ void MoveTrackerWidget::setAspectRatio(const double aspectRatio) noexcept
 void MoveTrackerWidget::setPosition(const QPointF &destination) noexcept
 {
     squareRect_.moveTopLeft(destination);
+
     squarePlotShapeItem_->setRect(squareRect_);
     replot();
 }

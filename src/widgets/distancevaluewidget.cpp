@@ -28,7 +28,7 @@ DistanceValueWidget::DistanceValueWidget(QWidget *parent) noexcept
     setLayout(layout);
 
     connect(&buttons_, &QButtonGroup::idClicked, this, [this](int id) -> void {
-        arduinoMeterDoubleSpinBox_->setMainValue(std::pow(10.0, id));
+        arduinoMeterDoubleSpinBox_->setMainValue(arduinoMeterDoubleSpinBox_->mainValue() +std::pow(10.0, id));
     });
 }
 
