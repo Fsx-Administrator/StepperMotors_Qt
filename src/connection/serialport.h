@@ -27,7 +27,7 @@ class SerialPort : public QSerialPort
 public:
     explicit SerialPort(
         const QString &name,
-        const qint32 baudRate = 9600
+        const qint32 baudRate
     );
     virtual ~SerialPort() noexcept;
 
@@ -51,7 +51,7 @@ public:
     template<BuiltInType T>
     [[nodiscard]] T recieve() noexcept
     {
-        return *recieve<T*>(sizeof(T));
+        return *recieve<T *>(sizeof(T));
     }
 
     void send(const QByteArray data) noexcept

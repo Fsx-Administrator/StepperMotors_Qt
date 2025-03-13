@@ -1,6 +1,6 @@
 #include "arduino.h"
 
-#include "arduinoserialport.h"
+#include "serialport.h"
 
 #include <QDebug>
 
@@ -12,7 +12,7 @@ void Arduino::connect(const QString &portName, const quint32 baudRate)
         if (isConnected())
             throw ArduinoException("Arduino has already connected");
 
-        serialPort_ = std::make_unique<ArduinoSerialPort>(portName, baudRate);
+        serialPort_ = std::make_unique<SerialPort>(portName, baudRate);
         setReadyRecieved(true);
         setErrorHandling(true);
     }

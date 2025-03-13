@@ -10,7 +10,7 @@ public:
 };
 
 
-class ArduinoSerialPort;
+class SerialPort;
 
 class Arduino : public QObject
 {
@@ -44,6 +44,6 @@ protected:
 
     virtual void errorHandler(const QString &error);
 
-    std::unique_ptr<ArduinoSerialPort> serialPort_;
+    std::unique_ptr<SerialPort> serialPort_;
 
 };
