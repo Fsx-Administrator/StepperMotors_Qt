@@ -1,32 +1,46 @@
 #include "arduinoparameters.h"
 
+#include "inifile.h"
 #include "inifilestorage.h"
+#include "limiter.h"
+
+#include <QDebug>
 
 
-void ArduinoParameters::load()
+ArduinoParameters::ArduinoParameters() noexcept
 {
-    auto sectionsMap = IniFileStorage::load(_FILE_NAME_);
-
-    positions_[Qt::XAxis] = sectionsMap.get<Position>("Positions", "x");
-    positions_[Qt::YAxis] = sectionsMap.get<Position>("Positions", "y");
-    positions_[Qt::ZAxis] = sectionsMap.get<Position>("Positions", "z");
-    coefficients_[Qt::XAxis] = sectionsMap.get<Coefficient>("Coefficients", "x_nm_dsc");
-    coefficients_[Qt::YAxis] = sectionsMap.get<Coefficient>("Coefficients", "y_nm_dsc");
-    coefficients_[Qt::ZAxis] = sectionsMap.get<Coefficient>("Coefficients", "z_nm_dsc");
-    maxes_[Qt::XAxis] = sectionsMap.get<Position>("Max", "x");
-    maxes_[Qt::YAxis] = sectionsMap.get<Position>("Max", "y");
-    maxes_[Qt::ZAxis] = sectionsMap.get<Position>("Max", "z");
+    load();
 }
 
-void ArduinoParameters::save()
+ArduinoParameters::~ArduinoParameters() noexcept
 {
-    SectionsMap sectionsMap;
+    save();
+}
 
-    sectionsMap.set("Positions", "x", positions_[Qt::XAxis]);
-    sectionsMap.set("Positions", "y", positions_[Qt::YAxis]);
-    sectionsMap.set("Positions", "z", positions_[Qt::ZAxis]);
+ArduinoParameters::ArduinoParameters(const ArduinoParameters &other) noexcept
+{
+    positions_ = other.positions_;
+}
 
-    IniFileStorage::save(_FILE_NAME_, sectionsMap);
+ArduinoParameters::ArduinoParameters(ArduinoParameters &&other) noexcept
+{
+    positions_ = std::move(other.positions_);
+}
+
+ArduinoParameters &ArduinoParameters::operator=(const ArduinoParameters &other) noexcept
+{
+    if (&other != this)
+        positions_ = other.positions_;
+
+    return *this;
+}
+
+ArduinoParameters &ArduinoParameters::operator=(ArduinoParameters &&other) noexcept
+{
+    if (&other != this)
+        positions_ = std::move(other.positions_);
+
+    return *this;
 }
 
 ArduinoParameters::Position ArduinoParameters::distanceInDsc(const Qt::Axis axis) const noexcept
@@ -46,15 +60,50 @@ double ArduinoParameters::distanceStep() const noexcept
 
 void ArduinoParameters::setDistanceInDsc(const Qt::Axis axis, const Position dsc) noexcept
 {
-    if (dsc < 0)
-        positions_[axis] = 0;
-    else if (dsc > maxes_[axis])
-        positions_[axis] = maxes_[axis];
-    else
-        positions_[axis] = dsc;
+    positions_[axis] = Limiter::limitedValue(dsc, 0, maxes_[axis]);
 }
 
 void ArduinoParameters::setDistanceInUm(const Qt::Axis axis, const double um) noexcept
 {
     setDistanceInDsc(axis, static_cast<Position>(std::round(um / coefficients_[axis])));
+}
+
+void ArduinoParameters::load()
+{
+    try
+    {
+        auto sectionsMap = IniFileStorage::load(_FILE_NAME_);
+
+        positions_[Qt::XAxis] = sectionsMap.get<Position>("Positions", "x");
+        positions_[Qt::YAxis] = sectionsMap.get<Position>("Positions", "y");
+        positions_[Qt::ZAxis] = sectionsMap.get<Position>("Positions", "z");
+        coefficients_[Qt::XAxis] = sectionsMap.get<Coefficient>("Coefficients", "x_nm_dsc");
+        coefficients_[Qt::YAxis] = sectionsMap.get<Coefficient>("Coefficients", "y_nm_dsc");
+        coefficients_[Qt::ZAxis] = sectionsMap.get<Coefficient>("Coefficients", "z_nm_dsc");
+        maxes_[Qt::XAxis] = sectionsMap.get<Position>("Max", "x");
+        maxes_[Qt::YAxis] = sectionsMap.get<Position>("Max", "y");
+        maxes_[Qt::ZAxis] = sectionsMap.get<Position>("Max", "z");
+    }
+    catch (const IniFileException &exception)
+    {
+        qWarning() << exception.what();
+    }
+}
+
+void ArduinoParameters::save()
+{
+    SectionsMap sectionsMap;
+
+    sectionsMap.set("Positions", "x", positions_[Qt::XAxis]);
+    sectionsMap.set("Positions", "y", positions_[Qt::YAxis]);
+    sectionsMap.set("Positions", "z", positions_[Qt::ZAxis]);
+
+    try
+    {
+        IniFileStorage::save(_FILE_NAME_, sectionsMap);
+    }
+    catch (const IniFileException &exception)
+    {
+        qWarning() << exception.what();
+    }
 }

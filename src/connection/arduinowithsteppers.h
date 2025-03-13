@@ -24,7 +24,7 @@ public:
         return instance_;
     }
     void move(const double distance, const Direction direction);
-    [[nodiscard]] inline double step() const noexcept { return parameters_.distanceStep(); }
+    [[nodiscard]] inline double step() const noexcept { return parameters_->distanceStep(); }
     void stop();
 
 signals:
@@ -47,7 +47,7 @@ private:
 
     [[nodiscard]] QString positionsAsString() const noexcept;
 
-    ArduinoParameters parameters_;
+    std::unique_ptr<ArduinoParameters> parameters_;
 
     const QString _DELIMETER_ = ",";
     const QString _TERMINATOR_ = ";";

@@ -2,6 +2,7 @@
 
 #include "arduinoparameters.h"
 #include "arduinometerdoublespinbox.h"
+#include "limiter.h"
 
 #include <QGridLayout>
 #include <QPushButton>
@@ -34,11 +35,13 @@ DistanceValueWidget::DistanceValueWidget(QWidget *parent) noexcept
             button->setEnabled(false);
 
     connect(&buttons_, &QButtonGroup::idClicked, this, [this](int id) -> void {
-        const auto max = std::max(ArduinoParameters::maxInUm(Qt::XAxis), ArduinoParameters::maxInUm(Qt::YAxis));
-        if (arduinoMeterDoubleSpinBox_->mainValue() + buttonDistance(id) > max)
-            arduinoMeterDoubleSpinBox_->setMainValue(max);
-        else
-            arduinoMeterDoubleSpinBox_->setMainValue(arduinoMeterDoubleSpinBox_->mainValue() + buttonDistance(id));
+        arduinoMeterDoubleSpinBox_->setMainValue(
+            Limiter::limitedValue(
+                arduinoMeterDoubleSpinBox_->mainValue() + buttonDistance(id),
+                0.0,
+                std::max(ArduinoParameters::maxInUm(Qt::XAxis), ArduinoParameters::maxInUm(Qt::YAxis))
+            )
+        );
     });
 }
 
