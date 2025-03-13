@@ -1,44 +1,20 @@
 #pragma once
 
-#include "inifile.h"
-#include "inifilestorage.h"
+#include "sectionsmap.h"
 
+
+class QWidget;
 
 class WidgetSettings
 {
 
 public:
-    explicit WidgetSettings(const QString &name)
-    try : _SECTION_NAME_(name)
-        , settings_(IniFileStorage::load(_CONFIG_FILE_NAME_, name))
-    {}
-    catch (const IniFileException &exception)
-    {
-        qWarning() << exception.what();
-    }
-
-    virtual ~WidgetSettings()
-    {
-        try
-        {
-            IniFileStorage::save(_CONFIG_FILE_NAME_, _SECTION_NAME_, settings_);
-        }
-        catch (const IniFileException &exception)
-        {
-            qWarning() << exception.what();
-        }
-    }
+    explicit WidgetSettings(QWidget *parent);
+    virtual ~WidgetSettings();
 
     template<class T>
-    [[nodiscard]] inline T get(const QString &name)
-    {
-        return settings_.get<T>(name);
-    }
-
-    inline void set(const QString &name, const QVariant &value)
-    {
-        settings_.set(name, value);
-    }
+    [[nodiscard]] inline T get(const QString &name) { return settings_.get<T>(name); }
+    void set(const QString &name, const QVariant &value);
 
 private:
     static inline const QString _CONFIG_FILE_NAME_ = "config.ini";

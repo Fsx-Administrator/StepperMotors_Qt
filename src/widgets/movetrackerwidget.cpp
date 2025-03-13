@@ -14,7 +14,7 @@ MoveTrackerWidget::MoveTrackerWidget(QWidget *parent) noexcept
     , borderRect_(QPointF(), _MINIMUM_SIZE_)
     , squarePlotShapeItem_(new QwtPlotShapeItem)
     , borderPlotShapeItem_(new QwtPlotShapeItem)
-    , settings_(std::make_unique<WidgetSettings>("MoveTrackerWidget"))
+    , settings_(std::make_unique<WidgetSettings>(this))
 {
     setAxisVisible(QwtPlot::yLeft, false);
     setAxisVisible(QwtPlot::xBottom, false);
@@ -45,37 +45,37 @@ MoveTrackerWidget::~MoveTrackerWidget() noexcept
     settings_->set("y_origin", squareRect_.top());
 }
 
-void MoveTrackerWidget::move(const double step, const Direction dir) noexcept
-{
-    auto destination = squareRect_.topLeft();
+// void MoveTrackerWidget::move(const double step, const Direction dir) noexcept
+// {
+//     auto destination = squareRect_.topLeft();
 
-    switch (dir)
-    {
-    case Direction::Down:
-        if (destination.y() - step >= borderRect_.top())
-            destination.ry() -= step;
-        break;
+//     switch (dir)
+//     {
+//     case Direction::Down:
+//         if (destination.y() - step >= borderRect_.top())
+//             destination.ry() -= step;
+//         break;
 
-    case Direction::Left:
-        if (destination.x() - step >= borderRect_.left())
-            destination.rx() -= step;
-        break;
+//     case Direction::Left:
+//         if (destination.x() - step >= borderRect_.left())
+//             destination.rx() -= step;
+//         break;
 
-    case Direction::Right:
-        if (destination.x() + step <= borderRect_.right() - squareRect_.width())
-            destination.rx() += step;
-        break;
+//     case Direction::Right:
+//         if (destination.x() + step <= borderRect_.right() - squareRect_.width())
+//             destination.rx() += step;
+//         break;
 
-    case Direction::Up:
-        if (destination.y() + step <= borderRect_.top() + (borderRect_.height() - squareRect_.height()))
-            destination.ry() += step;
-        break;
-    }
+//     case Direction::Up:
+//         if (destination.y() + step <= borderRect_.top() + (borderRect_.height() - squareRect_.height()))
+//             destination.ry() += step;
+//         break;
+//     }
 
-    squareRect_.moveTopLeft(destination);
-    squarePlotShapeItem_->setRect(squareRect_);
-    replot();
-}
+//     squareRect_.moveTopLeft(destination);
+//     squarePlotShapeItem_->setRect(squareRect_);
+//     replot();
+// }
 
 void MoveTrackerWidget::setAspectRatio(const double aspectRatio) noexcept
 {

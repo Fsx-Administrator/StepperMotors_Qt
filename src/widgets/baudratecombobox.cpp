@@ -7,7 +7,7 @@
 
 BaudRateComboBox::BaudRateComboBox(QWidget *parent) noexcept
     : QComboBox(parent)
-    , settings_(std::make_unique<WidgetSettings>("BaudRateComboBox"))
+    , settings_(std::make_unique<WidgetSettings>(this))
 {
     addItem(QString::number(QSerialPort::Baud1200));
     addItem(QString::number(QSerialPort::Baud2400));

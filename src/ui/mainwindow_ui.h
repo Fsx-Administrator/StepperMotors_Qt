@@ -5,6 +5,7 @@
 #include "maintoolbar.h"
 #include "mainwindow.h"
 #include "movetrackerwidget.h"
+#include "positionlabel.h"
 
 #include <QPointer>
 #include <QPushButton>
@@ -26,5 +27,6 @@ public:
     QPointer<DistanceValueWidget> distanceValueWidget;
     QPointer<KnobWidget> knobWidget;
     QPointer<MoveTrackerWidget> moveTrackerWidget;
+    QPointer<PositionLabel> positionLabel;
 
 };
