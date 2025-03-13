@@ -16,6 +16,8 @@ public:
     [[nodiscard]] Position distanceInDsc(const Qt::Axis axis) const noexcept;
     [[nodiscard]] double distanceInUm(const Qt::Axis axis) const noexcept;
     [[nodiscard]] double distanceStep() const noexcept;
+    [[nodiscard]] static inline Position maxInDsc(const Qt::Axis axis) noexcept { return maxes_[axis]; }
+    [[nodiscard]] static inline Position maxInUm(const Qt::Axis axis) noexcept { return maxInDsc(axis) * coefficients_[axis]; }
     void setDistanceInDsc(const Qt::Axis axis, const Position dsc) noexcept;
     void setDistanceInUm(const Qt::Axis axis, const double um) noexcept;
 

@@ -1,5 +1,6 @@
 #include "distancevaluewidget.h"
 
+#include "arduinoparameters.h"
 #include "arduinometerdoublespinbox.h"
 
 #include <QGridLayout>
@@ -27,8 +28,17 @@ DistanceValueWidget::DistanceValueWidget(QWidget *parent) noexcept
     layout->addWidget(buttons_.button(5), 2, 2, Qt::AlignCenter);
     setLayout(layout);
 
+    const auto buttons = buttons_.buttons();
+    for (const auto button : buttons)
+        if (buttonDistance(button) > 0.5 * std::max(ArduinoParameters::maxInUm(Qt::XAxis), ArduinoParameters::maxInUm(Qt::YAxis)))
+            button->setEnabled(false);
+
     connect(&buttons_, &QButtonGroup::idClicked, this, [this](int id) -> void {
-        arduinoMeterDoubleSpinBox_->setMainValue(arduinoMeterDoubleSpinBox_->mainValue() +std::pow(10.0, id));
+        const auto max = std::max(ArduinoParameters::maxInUm(Qt::XAxis), ArduinoParameters::maxInUm(Qt::YAxis));
+        if (arduinoMeterDoubleSpinBox_->mainValue() + buttonDistance(id) > max)
+            arduinoMeterDoubleSpinBox_->setMainValue(max);
+        else
+            arduinoMeterDoubleSpinBox_->setMainValue(arduinoMeterDoubleSpinBox_->mainValue() + buttonDistance(id));
     });
 }
 
@@ -40,4 +50,14 @@ double DistanceValueWidget::distance() const noexcept
 void DistanceValueWidget::setDistance(const double value) noexcept
 {
     arduinoMeterDoubleSpinBox_->setMainValue(value);
+}
+
+double DistanceValueWidget::buttonDistance(const int id) const
+{
+    return std::pow(10.0, id);
+}
+
+double DistanceValueWidget::buttonDistance(QAbstractButton *button) const
+{
+    return buttonDistance(buttons_.id(button));
 }

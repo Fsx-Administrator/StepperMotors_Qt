@@ -18,6 +18,9 @@ public:
     void setDistance(const double value) noexcept;
 
 private:
+    [[nodiscard]] double buttonDistance(const int id) const;
+    [[nodiscard]] double buttonDistance(QAbstractButton *button) const;
+
     QButtonGroup buttons_;
     ArduinoMeterDoubleSpinBox *arduinoMeterDoubleSpinBox_;
 
