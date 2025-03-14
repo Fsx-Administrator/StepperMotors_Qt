@@ -18,19 +18,19 @@ void ArduinoWithSteppers::move(const double distance, const Direction direction)
     switch (direction)
     {
     case Down:
-        parameters_->setDistanceInUm(Qt::YAxis, parameters_->distanceInUm(Qt::YAxis) - distance);
+        parameters_->setDistanceInUm(ArduinoParameters::yAxisWithSwap(), parameters_->distanceInUm(ArduinoParameters::yAxisWithSwap()) - distance);
         break;
 
     case Left:
-        parameters_->setDistanceInUm(Qt::XAxis, parameters_->distanceInUm(Qt::XAxis) - distance);
+        parameters_->setDistanceInUm(ArduinoParameters::xAxisWithSwap(), parameters_->distanceInUm(ArduinoParameters::xAxisWithSwap()) - distance);
         break;
 
     case Right:
-        parameters_->setDistanceInUm(Qt::XAxis, parameters_->distanceInUm(Qt::XAxis) + distance);
+        parameters_->setDistanceInUm(ArduinoParameters::xAxisWithSwap(), parameters_->distanceInUm(ArduinoParameters::xAxisWithSwap()) + distance);
         break;
 
     case Up:
-        parameters_->setDistanceInUm(Qt::YAxis, parameters_->distanceInUm(Qt::YAxis) + distance);
+        parameters_->setDistanceInUm(ArduinoParameters::yAxisWithSwap(), parameters_->distanceInUm(ArduinoParameters::yAxisWithSwap()) + distance);
         break;
     }
 

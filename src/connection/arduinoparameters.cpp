@@ -8,6 +8,7 @@
 
 
 ArduinoParameters::ArduinoParameters() noexcept
+    : positions_()
 {
     load();
 }
@@ -68,6 +69,16 @@ void ArduinoParameters::setDistanceInUm(const Qt::Axis axis, const double um) no
     setDistanceInDsc(axis, static_cast<Position>(std::round(um / coefficients_[axis])));
 }
 
+Qt::Axis ArduinoParameters::xAxisWithSwap()
+{
+    return (swapXy) ? (Qt::YAxis) : (Qt::XAxis);
+}
+
+Qt::Axis ArduinoParameters::yAxisWithSwap()
+{
+    return (swapXy) ? (Qt::XAxis) : (Qt::YAxis);
+}
+
 void ArduinoParameters::load()
 {
     try
@@ -83,6 +94,7 @@ void ArduinoParameters::load()
         maxes_[Qt::XAxis] = sectionsMap.get<Position>("Max", "x");
         maxes_[Qt::YAxis] = sectionsMap.get<Position>("Max", "y");
         maxes_[Qt::ZAxis] = sectionsMap.get<Position>("Max", "z");
+        swapXy = sectionsMap.get<bool>("Additional", "swap_xy");
     }
     catch (const IniFileException &exception)
     {
