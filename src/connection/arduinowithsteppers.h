@@ -36,6 +36,7 @@ private slots:
 private:
     enum MessageType : char
     {
+        Calibration = 'c',
         GetPosition = 'g',
         Move        = 'm',
         SetPosition = 'p',

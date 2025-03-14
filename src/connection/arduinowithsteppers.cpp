@@ -6,11 +6,11 @@
 
 void ArduinoWithSteppers::calibrate()
 {
-    parameters_->setDistanceInDsc(Qt::XAxis, 0);
-    parameters_->setDistanceInDsc(Qt::YAxis, 0);
+    parameters_->setDistanceInDsc(Qt::XAxis, -ArduinoParameters::maxInDsc(ArduinoParameters::xAxisWithSwap()));
+    parameters_->setDistanceInDsc(Qt::YAxis, -ArduinoParameters::maxInDsc(ArduinoParameters::yAxisWithSwap()));
     parameters_->setDistanceInDsc(Qt::ZAxis, 0);
 
-    sendMessage(QString(SetPosition) + positionsAsString());
+    sendMessage(QString(Calibration) + positionsAsString());
 }
 
 void ArduinoWithSteppers::move(const double distance, const Direction direction)
@@ -50,18 +50,26 @@ void ArduinoWithSteppers::recieveDistance(const QByteArray &message)
         return;
 
     messageString = messageString.section(";", -2);
-    if (message[0] == GetPosition && message.size() > 6)
+    if (messageString[0] == GetPosition && messageString.size() > 6)
     {
-        const auto list = messageString.sliced(1, message.size() - 2).split(',');
+        const auto list = messageString.sliced(1, messageString.size() - 2).split(',');
         parameters_->setDistanceInDsc(Qt::XAxis, list[Qt::XAxis].toInt());
         parameters_->setDistanceInDsc(Qt::YAxis, list[Qt::YAxis].toInt());
         parameters_->setDistanceInDsc(Qt::ZAxis, list[Qt::ZAxis].toInt());
-
-        emit distanceRecieved(QPointF(
-            parameters_->distanceInUm(Qt::XAxis),
-            parameters_->distanceInUm(Qt::YAxis)
-        ));
     }
+    else if (messageString[0] == Calibration)
+    {
+        parameters_->setDistanceInDsc(Qt::XAxis, 0);
+        parameters_->setDistanceInDsc(Qt::YAxis, 0);
+        parameters_->setDistanceInDsc(Qt::ZAxis, 0);
+
+        sendMessage(QString(SetPosition) + positionsAsString());
+    }
+
+    emit distanceRecieved(QPointF(
+        parameters_->distanceInUm(Qt::XAxis),
+        parameters_->distanceInUm(Qt::YAxis)
+    ));
 
     messageString.clear();
 }

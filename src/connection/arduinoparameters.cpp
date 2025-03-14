@@ -61,7 +61,7 @@ double ArduinoParameters::distanceStep() const noexcept
 
 void ArduinoParameters::setDistanceInDsc(const Qt::Axis axis, const Position dsc) noexcept
 {
-    positions_[axis] = Limiter::limitedValue(dsc, 0, maxes_[axis]);
+    positions_[axis] = Limiter::limitedValue(dsc, -maxes_[axis], maxes_[axis]);
 }
 
 void ArduinoParameters::setDistanceInUm(const Qt::Axis axis, const double um) noexcept

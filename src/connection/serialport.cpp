@@ -9,9 +9,6 @@ SerialPort::SerialPort(
 )
     : QSerialPort(nullptr)
 {
-    qDebug() << baudRate;
-    qDebug() << name;
-
     if (name.isEmpty())
         throw SerialPortException("Port name is empty");
 
