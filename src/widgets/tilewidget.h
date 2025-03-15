@@ -28,8 +28,8 @@ public:
     explicit TileWidget(QWidget *parent = nullptr) noexcept;
     virtual ~TileWidget() noexcept = default;
 
-    virtual void setButton(const Place place, Slot slot) noexcept;
     [[nodiscard]] QPushButton *button(const Place place) const noexcept;
+    virtual void setButton(const Place place, const QString &name, Slot slot) noexcept;
 
 private:
     [[nodiscard]] QPair<unsigned, unsigned> buttonPlace(const Place place) const;

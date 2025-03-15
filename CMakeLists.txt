@@ -42,8 +42,10 @@ qt_add_resources(${PROJECT_NAME} "images"
         ${ICONS_ROOT}/arrow_down.png
         ${ICONS_ROOT}/arrow_right.png
         ${ICONS_ROOT}/arrow_up.png
-        ${ICONS_ROOT}/calibrate.png
-        ${ICONS_ROOT}/central.png
+        ${ICONS_ROOT}/auto_calibrate.png
+        ${ICONS_ROOT}/center.png
+        ${ICONS_ROOT}/manual_calibrate.png
+        ${ICONS_ROOT}/stop.png
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE

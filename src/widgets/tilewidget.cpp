@@ -13,21 +13,6 @@ TileWidget::TileWidget(QWidget *parent) noexcept
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
-void TileWidget::setButton(const Place place, Slot slot) noexcept
-{
-    auto b = button(place);
-
-    if (!b)
-    {
-        b = new QPushButton(this);
-        auto [row, column] = buttonPlace(place);
-        static_cast<QGridLayout *>(layout())->addWidget(b, row, column);
-    }
-
-    disconnect(b, &QPushButton::clicked, nullptr, nullptr);
-    connect(b, &QPushButton::clicked, this, [this, slot]() -> void { slot(); });
-}
-
 QPushButton *TileWidget::button(const Place place) const noexcept
 {
     auto [row, column] = buttonPlace(place);
@@ -37,6 +22,22 @@ QPushButton *TileWidget::button(const Place place) const noexcept
         return static_cast<QPushButton *>(layoutItem->widget());
 
     return nullptr;
+}
+
+void TileWidget::setButton(const Place place, const QString &name, Slot slot) noexcept
+{
+    auto b = button(place);
+
+    if (!b)
+    {
+        b = new QPushButton(this);
+        b->setToolTip(name);
+        auto [row, column] = buttonPlace(place);
+        static_cast<QGridLayout *>(layout())->addWidget(b, row, column);
+    }
+
+    disconnect(b, &QPushButton::clicked, nullptr, nullptr);
+    connect(b, &QPushButton::clicked, this, [this, slot]() -> void { slot(); });
 }
 
 QPair<unsigned, unsigned> TileWidget::buttonPlace(const Place place) const

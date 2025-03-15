@@ -29,4 +29,6 @@ public:
     QPointer<MoveTrackerWidget> moveTrackerWidget;
     QPointer<PositionLabel> positionLabel;
 
+    QMap<TileWidget::Place, QString> tileWidgetButtonNames;
+
 };

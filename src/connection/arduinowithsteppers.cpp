@@ -4,13 +4,22 @@
 #include <QPointF>
 
 
-void ArduinoWithSteppers::calibrate()
+void ArduinoWithSteppers::autoCalibrate()
 {
     parameters_->setDistanceInDsc(Qt::XAxis, -ArduinoParameters::maxInDsc(ArduinoParameters::xAxisWithSwap()));
     parameters_->setDistanceInDsc(Qt::YAxis, -ArduinoParameters::maxInDsc(ArduinoParameters::yAxisWithSwap()));
     parameters_->setDistanceInDsc(Qt::ZAxis, 0);
 
     sendMessage(QString(Calibration) + positionsAsString());
+}
+
+void ArduinoWithSteppers::manualCalibrate()
+{
+    parameters_->setDistanceInDsc(Qt::XAxis, 0);
+    parameters_->setDistanceInDsc(Qt::YAxis, 0);
+    parameters_->setDistanceInDsc(Qt::ZAxis, 0);
+
+    sendMessage(QString(SetPosition) + positionsAsString());
 }
 
 void ArduinoWithSteppers::move(const double distance, const Direction direction)
@@ -35,6 +44,15 @@ void ArduinoWithSteppers::move(const double distance, const Direction direction)
     }
 
     sendMessage(QString(Move) + positionsAsString());
+}
+
+void ArduinoWithSteppers::moveToCenter()
+{
+    parameters_->setDistanceInDsc(Qt::XAxis, ArduinoParameters::maxInDsc(ArduinoParameters::xAxisWithSwap()) / 2);
+    parameters_->setDistanceInDsc(Qt::YAxis, ArduinoParameters::maxInDsc(ArduinoParameters::yAxisWithSwap()) / 2);
+    parameters_->setDistanceInDsc(Qt::ZAxis, 0);
+
+    sendMessage(QString(SetPosition) + positionsAsString());
 }
 
 void ArduinoWithSteppers::stop()

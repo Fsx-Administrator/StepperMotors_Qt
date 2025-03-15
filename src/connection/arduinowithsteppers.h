@@ -17,13 +17,15 @@ public:
         Up
     };
 
-    void calibrate();
+    void autoCalibrate();
     static ArduinoWithSteppers &instance()
     {
         static ArduinoWithSteppers instance_;
         return instance_;
     }
+    void manualCalibrate();
     void move(const double distance, const Direction direction);
+    void moveToCenter();
     [[nodiscard]] inline double step() const noexcept { return parameters_->distanceStep(); }
     void stop();
 
