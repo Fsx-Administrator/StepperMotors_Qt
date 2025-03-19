@@ -75,8 +75,8 @@ void ArduinoWithSteppers::recieveDistance(const QByteArray &message)
     if (messageString[0] == GetPosition && messageString.size() > 6)
     {
         const auto list = messageString.sliced(2, messageString.size() - 2).split(',');
-        parameters_->setDistanceInDsc(Qt::XAxis, list[Qt::XAxis].toInt());
-        parameters_->setDistanceInDsc(Qt::YAxis, list[Qt::YAxis].toInt());
+        parameters_->setDistanceInDsc(Qt::XAxis, ArduinoParameters::inverseFactor(ArduinoParameters::xAxisWithSwap()) * list[Qt::XAxis].toInt());
+        parameters_->setDistanceInDsc(Qt::YAxis, ArduinoParameters::inverseFactor(ArduinoParameters::yAxisWithSwap()) * list[Qt::YAxis].toInt());
         parameters_->setDistanceInDsc(Qt::ZAxis, list[Qt::ZAxis].toInt());
     }
     else if (messageString[0] == Calibration)
@@ -89,8 +89,8 @@ void ArduinoWithSteppers::recieveDistance(const QByteArray &message)
     }
 
     emit distanceRecieved(QPointF(
-        parameters_->distanceInUm(Qt::XAxis),
-        parameters_->distanceInUm(Qt::YAxis)
+        parameters_->distanceInUm(ArduinoParameters::xAxisWithSwap()),
+        parameters_->distanceInUm(ArduinoParameters::yAxisWithSwap())
     ));
 
     messageString.clear();
@@ -108,7 +108,7 @@ ArduinoWithSteppers::~ArduinoWithSteppers() noexcept {}
 QString ArduinoWithSteppers::positionsAsString() const noexcept
 {
     return _DELIMETER_
-           + QString::number(parameters_->distanceInDsc(Qt::XAxis)) + _DELIMETER_
-           + QString::number(parameters_->distanceInDsc(Qt::YAxis)) + _DELIMETER_
-           + QString::number(parameters_->distanceInDsc(Qt::ZAxis)) + _TERMINATOR_;
+           + parameters_->positionAsString(Qt::XAxis) + _DELIMETER_
+           + parameters_->positionAsString(Qt::YAxis) + _DELIMETER_
+           + parameters_->positionAsString(Qt::ZAxis) + _TERMINATOR_;
 }
