@@ -18,6 +18,7 @@ public:
     };
 
     void autoCalibrate();
+    void connect(const QString &portName, const quint32 baudRate = 9600) override;
     static ArduinoWithSteppers &instance()
     {
         static ArduinoWithSteppers instance_;

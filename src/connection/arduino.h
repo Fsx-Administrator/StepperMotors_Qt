@@ -17,7 +17,7 @@ class Arduino : public QObject
     Q_OBJECT
 
 public:
-    void connect(const QString &portName, const quint32 baudRate = 9600);
+    virtual void connect(const QString &portName, const quint32 baudRate = 9600);
     void disconnect();
     [[nodiscard]] bool isConnected() const noexcept;
     static Arduino &instance()

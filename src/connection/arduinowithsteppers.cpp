@@ -6,11 +6,15 @@
 
 void ArduinoWithSteppers::autoCalibrate()
 {
-    parameters_->setDistanceInDsc(Qt::XAxis, -ArduinoParameters::maxInDsc(ArduinoParameters::xAxisWithSwap()));
-    parameters_->setDistanceInDsc(Qt::YAxis, -ArduinoParameters::maxInDsc(ArduinoParameters::yAxisWithSwap()));
-    parameters_->setDistanceInDsc(Qt::ZAxis, 0);
+    parameters_->calibrate();
 
     sendMessage(QString(Calibration) + positionsAsString());
+}
+
+void ArduinoWithSteppers::connect(const QString &portName, const quint32 baudRate)
+{
+    Arduino::connect(portName, baudRate);
+    sendMessage(QString(SetPosition) + positionsAsString());
 }
 
 void ArduinoWithSteppers::manualCalibrate()
@@ -48,11 +52,11 @@ void ArduinoWithSteppers::move(const double distance, const Direction direction)
 
 void ArduinoWithSteppers::moveToCenter()
 {
-    parameters_->setDistanceInDsc(Qt::XAxis, ArduinoParameters::maxInDsc(ArduinoParameters::xAxisWithSwap()) / 2);
-    parameters_->setDistanceInDsc(Qt::YAxis, ArduinoParameters::maxInDsc(ArduinoParameters::yAxisWithSwap()) / 2);
+    parameters_->setDistanceInDsc(ArduinoParameters::xAxisWithSwap(), ArduinoParameters::maxInDsc(Qt::XAxis) / 2);
+    parameters_->setDistanceInDsc(ArduinoParameters::yAxisWithSwap(), ArduinoParameters::maxInDsc(Qt::YAxis) / 2);
     parameters_->setDistanceInDsc(Qt::ZAxis, 0);
 
-    sendMessage(QString(SetPosition) + positionsAsString());
+    sendMessage(QString(Move) + positionsAsString());
 }
 
 void ArduinoWithSteppers::stop()
@@ -70,7 +74,7 @@ void ArduinoWithSteppers::recieveDistance(const QByteArray &message)
     messageString = messageString.section(";", -2);
     if (messageString[0] == GetPosition && messageString.size() > 6)
     {
-        const auto list = messageString.sliced(1, messageString.size() - 2).split(',');
+        const auto list = messageString.sliced(2, messageString.size() - 2).split(',');
         parameters_->setDistanceInDsc(Qt::XAxis, list[Qt::XAxis].toInt());
         parameters_->setDistanceInDsc(Qt::YAxis, list[Qt::YAxis].toInt());
         parameters_->setDistanceInDsc(Qt::ZAxis, list[Qt::ZAxis].toInt());

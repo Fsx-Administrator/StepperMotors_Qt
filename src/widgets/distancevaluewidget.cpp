@@ -43,6 +43,15 @@ DistanceValueWidget::DistanceValueWidget(QWidget *parent) noexcept
             )
         );
     });
+    connect(arduinoMeterDoubleSpinBox_, &QDoubleSpinBox::valueChanged, this, [this]() -> void {
+        arduinoMeterDoubleSpinBox_->setMainValue(
+            Limiter::limitedValue(
+                arduinoMeterDoubleSpinBox_->mainValue(),
+                0.0,
+                std::max(ArduinoParameters::maxInUm(Qt::XAxis), ArduinoParameters::maxInUm(Qt::YAxis))
+            )
+        );
+    });
 }
 
 double DistanceValueWidget::distance() const noexcept

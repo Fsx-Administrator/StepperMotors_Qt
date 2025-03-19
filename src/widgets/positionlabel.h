@@ -23,7 +23,7 @@ private:
     std::unique_ptr<WidgetSettings> settings_;
     QPointF position_;
 
-    const QString _X_POSITION_LABEL_PATTERN_ = "x = %1 um";
-    const QString _Y_POSITION_LABEL_PATTERN_ = "y = %1 um";
+    const QString _X_POSITION_LABEL_PATTERN_ = "x = %1/%2 um";
+    const QString _Y_POSITION_LABEL_PATTERN_ = "y = %1/%2 um";
 
 };

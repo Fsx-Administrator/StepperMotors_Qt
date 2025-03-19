@@ -18,6 +18,7 @@ public:
     ArduinoParameters &operator=(const ArduinoParameters &other) noexcept;
     ArduinoParameters &operator=(ArduinoParameters &&other) noexcept;
 
+    void calibrate();
     [[nodiscard]] Position distanceInDsc(const Qt::Axis axis) const noexcept;
     [[nodiscard]] double distanceInUm(const Qt::Axis axis) const noexcept;
     [[nodiscard]] double distanceStep() const noexcept;

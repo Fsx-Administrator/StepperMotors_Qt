@@ -36,6 +36,12 @@ ArduinoParameters &ArduinoParameters::operator=(const ArduinoParameters &other) 
     return *this;
 }
 
+void ArduinoParameters::calibrate()
+{
+    for (int axis = Qt::XAxis; axis < Qt::ZAxis; ++axis)
+       positions_[axis] = -maxes_[axis];
+}
+
 ArduinoParameters &ArduinoParameters::operator=(ArduinoParameters &&other) noexcept
 {
     if (&other != this)
@@ -56,12 +62,12 @@ double ArduinoParameters::distanceInUm(const Qt::Axis axis) const noexcept
 
 double ArduinoParameters::distanceStep() const noexcept
 {
-    return *std::ranges::min_element(coefficients_);
+    return std::min(coefficients_[Qt::XAxis], coefficients_[Qt::YAxis]);
 }
 
 void ArduinoParameters::setDistanceInDsc(const Qt::Axis axis, const Position dsc) noexcept
 {
-    positions_[axis] = Limiter::limitedValue(dsc, -maxes_[axis], maxes_[axis]);
+    positions_[axis] = Limiter::limitedValue(dsc, 0, maxes_[axis]);
 }
 
 void ArduinoParameters::setDistanceInUm(const Qt::Axis axis, const double um) noexcept
@@ -88,13 +94,17 @@ void ArduinoParameters::load()
         positions_[Qt::XAxis] = sectionsMap.get<Position>("Positions", "x");
         positions_[Qt::YAxis] = sectionsMap.get<Position>("Positions", "y");
         positions_[Qt::ZAxis] = sectionsMap.get<Position>("Positions", "z");
-        coefficients_[Qt::XAxis] = sectionsMap.get<Coefficient>("Coefficients", "x_nm_dsc");
-        coefficients_[Qt::YAxis] = sectionsMap.get<Coefficient>("Coefficients", "y_nm_dsc");
-        coefficients_[Qt::ZAxis] = sectionsMap.get<Coefficient>("Coefficients", "z_nm_dsc");
+        coefficients_[Qt::XAxis] = sectionsMap.get<Coefficient>("Coefficients", "x_um_dsc");
+        coefficients_[Qt::YAxis] = sectionsMap.get<Coefficient>("Coefficients", "y_um_dsc");
+        coefficients_[Qt::ZAxis] = sectionsMap.get<Coefficient>("Coefficients", "z_um_dsc");
         maxes_[Qt::XAxis] = sectionsMap.get<Position>("Max", "x");
         maxes_[Qt::YAxis] = sectionsMap.get<Position>("Max", "y");
         maxes_[Qt::ZAxis] = sectionsMap.get<Position>("Max", "z");
         swapXy = sectionsMap.get<bool>("Additional", "swap_xy");
+
+        qDebug() << positions_[Qt::XAxis] << positions_[Qt::YAxis] << positions_[Qt::ZAxis];
+        qDebug() << coefficients_[Qt::XAxis] << coefficients_[Qt::YAxis] << coefficients_[Qt::ZAxis];
+        qDebug() << maxes_[Qt::XAxis] << maxes_[Qt::YAxis] << maxes_[Qt::ZAxis];
     }
     catch (const IniFileException &exception)
     {
