@@ -35,47 +35,10 @@ MoveTrackerWidget::MoveTrackerWidget(QWidget *parent) noexcept
     {
         setRange(QSizeF(settings_->get<double>("x_range"), settings_->get<double>("y_range")));
         setAspectRatio(settings_->get<double>("aspect_ratio"));
-        setPosition(QPointF(settings_->get<double>("x_origin"), settings_->get<double>("y_origin")));
     }
 }
 
-MoveTrackerWidget::~MoveTrackerWidget() noexcept
-{
-    settings_->set("x_origin", squareRect_.left());
-    settings_->set("y_origin", squareRect_.top());
-}
-
-// void MoveTrackerWidget::move(const double step, const Direction dir) noexcept
-// {
-//     auto destination = squareRect_.topLeft();
-
-//     switch (dir)
-//     {
-//     case Direction::Down:
-//         if (destination.y() - step >= borderRect_.top())
-//             destination.ry() -= step;
-//         break;
-
-//     case Direction::Left:
-//         if (destination.x() - step >= borderRect_.left())
-//             destination.rx() -= step;
-//         break;
-
-//     case Direction::Right:
-//         if (destination.x() + step <= borderRect_.right() - squareRect_.width())
-//             destination.rx() += step;
-//         break;
-
-//     case Direction::Up:
-//         if (destination.y() + step <= borderRect_.top() + (borderRect_.height() - squareRect_.height()))
-//             destination.ry() += step;
-//         break;
-//     }
-
-//     squareRect_.moveTopLeft(destination);
-//     squarePlotShapeItem_->setRect(squareRect_);
-//     replot();
-// }
+MoveTrackerWidget::~MoveTrackerWidget() noexcept {}
 
 void MoveTrackerWidget::setAspectRatio(const double aspectRatio) noexcept
 {
@@ -90,7 +53,7 @@ void MoveTrackerWidget::setAspectRatio(const double aspectRatio) noexcept
 
 void MoveTrackerWidget::setPosition(const QPointF &destination) noexcept
 {
-    squareRect_.moveTopLeft(destination);
+    squareRect_.moveBottomLeft(QPointF(destination.x(), borderRect_.bottom() - destination.y()));
 
     squarePlotShapeItem_->setRect(squareRect_);
     replot();

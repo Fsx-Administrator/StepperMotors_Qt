@@ -17,6 +17,14 @@ void ArduinoWithSteppers::connect(const QString &portName, const quint32 baudRat
     sendMessage(QString(SetPosition) + positionsAsString());
 }
 
+QPointF ArduinoWithSteppers::currentPosition() const
+{
+    return QPointF(
+        parameters_->distanceInUm(Qt::XAxis),
+        parameters_->distanceInUm(Qt::YAxis)
+    );
+}
+
 void ArduinoWithSteppers::manualCalibrate()
 {
     parameters_->setDistanceInDsc(Qt::XAxis, 0);
@@ -24,6 +32,7 @@ void ArduinoWithSteppers::manualCalibrate()
     parameters_->setDistanceInDsc(Qt::ZAxis, 0);
 
     sendMessage(QString(SetPosition) + positionsAsString());
+    emit distanceRecieved(currentPosition());
 }
 
 void ArduinoWithSteppers::move(const double distance, const Direction direction)
@@ -31,19 +40,19 @@ void ArduinoWithSteppers::move(const double distance, const Direction direction)
     switch (direction)
     {
     case Down:
-        parameters_->setDistanceInUm(ArduinoParameters::yAxisWithSwap(), parameters_->distanceInUm(ArduinoParameters::yAxisWithSwap()) - distance);
+        parameters_->setDistanceInUm(Qt::YAxis, parameters_->distanceInUm(Qt::YAxis) - distance);
         break;
 
     case Left:
-        parameters_->setDistanceInUm(ArduinoParameters::xAxisWithSwap(), parameters_->distanceInUm(ArduinoParameters::xAxisWithSwap()) - distance);
+        parameters_->setDistanceInUm(Qt::XAxis, parameters_->distanceInUm(Qt::XAxis) - distance);
         break;
 
     case Right:
-        parameters_->setDistanceInUm(ArduinoParameters::xAxisWithSwap(), parameters_->distanceInUm(ArduinoParameters::xAxisWithSwap()) + distance);
+        parameters_->setDistanceInUm(Qt::XAxis, parameters_->distanceInUm(Qt::XAxis) + distance);
         break;
 
     case Up:
-        parameters_->setDistanceInUm(ArduinoParameters::yAxisWithSwap(), parameters_->distanceInUm(ArduinoParameters::yAxisWithSwap()) + distance);
+        parameters_->setDistanceInUm(Qt::YAxis, parameters_->distanceInUm(Qt::YAxis) + distance);
         break;
     }
 
@@ -52,9 +61,7 @@ void ArduinoWithSteppers::move(const double distance, const Direction direction)
 
 void ArduinoWithSteppers::moveToCenter()
 {
-    parameters_->setDistanceInDsc(ArduinoParameters::xAxisWithSwap(), ArduinoParameters::maxInDsc(Qt::XAxis) / 2);
-    parameters_->setDistanceInDsc(ArduinoParameters::yAxisWithSwap(), ArduinoParameters::maxInDsc(Qt::YAxis) / 2);
-    parameters_->setDistanceInDsc(Qt::ZAxis, 0);
+    parameters_->setPositionToCenter();
 
     sendMessage(QString(Move) + positionsAsString());
 }
@@ -71,12 +78,14 @@ void ArduinoWithSteppers::recieveDistance(const QByteArray &message)
     if (!messageString.endsWith(';'))
         return;
 
-    messageString = messageString.section(";", -2);
+    const auto messageList = messageString.split(';');
+    messageString = messageList[messageList.size() - 2];
     if (messageString[0] == GetPosition && messageString.size() > 6)
     {
         const auto list = messageString.sliced(2, messageString.size() - 2).split(',');
-        parameters_->setDistanceInDsc(Qt::XAxis, ArduinoParameters::inverseFactor(ArduinoParameters::xAxisWithSwap()) * list[Qt::XAxis].toInt());
-        parameters_->setDistanceInDsc(Qt::YAxis, ArduinoParameters::inverseFactor(ArduinoParameters::yAxisWithSwap()) * list[Qt::YAxis].toInt());
+        qDebug() << list;
+        parameters_->setDistanceInDsc(Qt::XAxis, list[Qt::XAxis].toInt());
+        parameters_->setDistanceInDsc(Qt::YAxis, list[Qt::YAxis].toInt());
         parameters_->setDistanceInDsc(Qt::ZAxis, list[Qt::ZAxis].toInt());
     }
     else if (messageString[0] == Calibration)
@@ -88,10 +97,8 @@ void ArduinoWithSteppers::recieveDistance(const QByteArray &message)
         sendMessage(QString(SetPosition) + positionsAsString());
     }
 
-    emit distanceRecieved(QPointF(
-        parameters_->distanceInUm(ArduinoParameters::xAxisWithSwap()),
-        parameters_->distanceInUm(ArduinoParameters::yAxisWithSwap())
-    ));
+    qDebug() << currentPosition();
+    emit distanceRecieved(currentPosition());
 
     messageString.clear();
 }

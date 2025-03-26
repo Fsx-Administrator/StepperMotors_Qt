@@ -29,11 +29,13 @@ set(ICONS_ROOT                      icons)
 
 file(GLOB HEADERS ${SOURCE_ROOT}/*.h ${SOURCE_ROOT}/*/*.h)
 file(GLOB SOURCES ${SOURCE_ROOT}/*.cpp ${SOURCE_ROOT}/*/*.cpp)
+set(RESOURCES ${PROJECT_SOURCE_DIR}/resources.rc)
 
 qt_add_executable(${PROJECT_NAME}
     WIN32
     ${HEADERS}
     ${SOURCES}
+    ${RESOURCES}
 )
 qt_add_resources(${PROJECT_NAME} "images"
     PREFIX "/"
@@ -140,10 +142,12 @@ file(GLOB TRANSLATIONS
 )
 install(FILES ${TRANSLATIONS} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/translations)
 
-file(GLOB PARAMS
-    ${PROJECT_SOURCE_DIR}/params/*.ini
-)
-install(FILES ${PARAMS} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+if (NOT EXISTS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/parameters.ini)
+    file(GLOB PARAMS
+        ${PROJECT_SOURCE_DIR}/params/*.ini
+    )
+    install(FILES ${PARAMS} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endif()
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(${PROJECT_NAME})

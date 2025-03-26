@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) noexcept
         ArduinoWithSteppers::instance().manualCalibrate();
     });
     ui->knobWidget->setButton(TileWidget::Place::Top, ui->tileWidgetButtonNames[TileWidget::Place::Top], [this]() -> void {
-        ArduinoWithSteppers::instance().move(ui->distanceValueWidget->distance(), ArduinoWithSteppers::Up);
+        ArduinoWithSteppers::instance().move(ui->distanceValueWidget->distance(), ArduinoWithSteppers::Down);
     });
     ui->knobWidget->setButton(TileWidget::Place::Left, ui->tileWidgetButtonNames[TileWidget::Place::Left], [this]() -> void {
         ArduinoWithSteppers::instance().move(ui->distanceValueWidget->distance(), ArduinoWithSteppers::Left);
@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) noexcept
         ArduinoWithSteppers::instance().autoCalibrate();
     });
     ui->knobWidget->setButton(TileWidget::Place::Bottom, ui->tileWidgetButtonNames[TileWidget::Place::Bottom], [this]() -> void {
-        ArduinoWithSteppers::instance().move(ui->distanceValueWidget->distance(), ArduinoWithSteppers::Down);
+        ArduinoWithSteppers::instance().move(ui->distanceValueWidget->distance(), ArduinoWithSteppers::Up);
     });
     ui->knobWidget->setButton(TileWidget::Place::BottomRight, ui->tileWidgetButtonNames[TileWidget::Place::BottomRight], [this]() -> void {
         ArduinoWithSteppers::instance().stop();
@@ -40,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent) noexcept
             ui->positionLabel->setPosition(position);
         }
     );
+
+    ui->positionLabel->setPosition(ArduinoWithSteppers::instance().currentPosition());
+    ui->moveTrackerWidget->setPosition(ArduinoWithSteppers::instance().currentPosition());
 }
 
 MainWindow::~MainWindow() noexcept {}

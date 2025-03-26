@@ -38,8 +38,14 @@ ArduinoParameters &ArduinoParameters::operator=(const ArduinoParameters &other) 
 
 void ArduinoParameters::calibrate()
 {
-    for (int axis = Qt::XAxis; axis < Qt::ZAxis; ++axis)
-       positions_[axis] = -inverseFactor_[axis] * maxes_[axis];
+    positions_[Qt::XAxis] = -(maxes_[Qt::XAxis] + 800.0 / coefficients_[Qt::XAxis]);
+    positions_[Qt::YAxis] = maxes_[Qt::YAxis] + 800.0 / coefficients_[Qt::YAxis];
+}
+
+void ArduinoParameters::setPositionToCenter()
+{
+    positions_[Qt::XAxis] = maxes_[Qt::XAxis] / 2;
+    positions_[Qt::YAxis] = -maxes_[Qt::YAxis] / 2;
 }
 
 ArduinoParameters &ArduinoParameters::operator=(ArduinoParameters &&other) noexcept
@@ -52,7 +58,7 @@ ArduinoParameters &ArduinoParameters::operator=(ArduinoParameters &&other) noexc
 
 ArduinoParameters::Position ArduinoParameters::distanceInDsc(const Qt::Axis axis) const noexcept
 {
-    return inverseFactor_[axis] * positions_[axis];
+    return positions_[axis];
 }
 
 double ArduinoParameters::distanceInUm(const Qt::Axis axis) const noexcept
@@ -72,22 +78,15 @@ QString ArduinoParameters::positionAsString(const Qt::Axis axis) const noexcept
 
 void ArduinoParameters::setDistanceInDsc(const Qt::Axis axis, const Position dsc) noexcept
 {
-    positions_[axis] = inverseFactor_[axis] * Limiter::limitedValue(dsc, 0, maxes_[axis]);
+    if (axis == Qt::XAxis)
+        positions_[axis] = Limiter::limitedValue(dsc, 0, maxes_[axis]);
+    else
+        positions_[axis] = Limiter::limitedValue(dsc, -maxes_[axis], 0);
 }
 
 void ArduinoParameters::setDistanceInUm(const Qt::Axis axis, const double um) noexcept
 {
     setDistanceInDsc(axis, static_cast<Position>(std::round(um / coefficients_[axis])));
-}
-
-Qt::Axis ArduinoParameters::xAxisWithSwap()
-{
-    return (swapXy) ? (Qt::YAxis) : (Qt::XAxis);
-}
-
-Qt::Axis ArduinoParameters::yAxisWithSwap()
-{
-    return (swapXy) ? (Qt::XAxis) : (Qt::YAxis);
 }
 
 void ArduinoParameters::load()
@@ -105,15 +104,7 @@ void ArduinoParameters::load()
         maxes_[Qt::XAxis] = sectionsMap.get<Position>("Max", "x_dsc");
         maxes_[Qt::YAxis] = sectionsMap.get<Position>("Max", "y_dsc");
         maxes_[Qt::ZAxis] = sectionsMap.get<Position>("Max", "z_dsc");
-        inverseFactor_[Qt::XAxis] = sectionsMap.get<Position>("InverseFactor", "x");
-        inverseFactor_[Qt::YAxis] = sectionsMap.get<Position>("InverseFactor", "y");
-        inverseFactor_[Qt::ZAxis] = sectionsMap.get<Position>("InverseFactor", "z");
         swapXy = sectionsMap.get<bool>("Additional", "swap_xy");
-
-        qDebug() << positions_[Qt::XAxis] << positions_[Qt::YAxis] << positions_[Qt::ZAxis];
-        qDebug() << coefficients_[Qt::XAxis] << coefficients_[Qt::YAxis] << coefficients_[Qt::ZAxis];
-        qDebug() << maxes_[Qt::XAxis] << maxes_[Qt::YAxis] << maxes_[Qt::ZAxis];
-        qDebug() << inverseFactor_[Qt::XAxis] << inverseFactor_[Qt::YAxis] << inverseFactor_[Qt::ZAxis];
     }
     catch (const IniFileException &exception)
     {
@@ -125,9 +116,9 @@ void ArduinoParameters::save()
 {
     SectionsMap sectionsMap;
 
-    sectionsMap.set("Positions", "x", positions_[Qt::XAxis]);
-    sectionsMap.set("Positions", "y", positions_[Qt::YAxis]);
-    sectionsMap.set("Positions", "z", positions_[Qt::ZAxis]);
+    sectionsMap.set("Positions", "x_dsc", positions_[Qt::XAxis]);
+    sectionsMap.set("Positions", "y_dsc", positions_[Qt::YAxis]);
+    sectionsMap.set("Positions", "z_dsc", positions_[Qt::ZAxis]);
 
     try
     {
