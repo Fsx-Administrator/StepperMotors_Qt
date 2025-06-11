@@ -49,7 +49,7 @@ void Arduino::disconnect()
     emit connected(false);
 }
 
-bool Arduino::isConnected() const noexcept
+bool Arduino::isConnected() const
 {
     return (serialPort_ != nullptr);
 }
@@ -61,6 +61,7 @@ void Arduino::sendMessage(const QString &message)
         if (!isConnected())
             throw ArduinoException("Arduino is not connected");
 
+        // qDebug() << message;
         serialPort_->send(message.toStdString().c_str(), message.size());
     }
     catch (const ArduinoException &exception)
@@ -69,30 +70,28 @@ void Arduino::sendMessage(const QString &message)
     }
 }
 
-void Arduino::setErrorHandling(const bool on) noexcept
+void Arduino::setErrorHandling(bool on)
 {
-    if (on)
-        QObject::connect(serialPort_.get(), &SerialPort::errorOccured, this, &Arduino::errorHandler);
-    else
-        QObject::disconnect(serialPort_.get(), &SerialPort::errorOccured, nullptr, nullptr);
+    (on)
+        ? QObject::connect(serialPort_.get(), &SerialPort::errorOccured, this, &Arduino::errorHandler)
+        : QObject::disconnect(serialPort_.get(), &SerialPort::errorOccured, nullptr, nullptr);
 }
 
-void Arduino::setReadyRecieved(const bool ready) noexcept
+void Arduino::setReadyRecieved(bool ready)
 {
-    if (ready)
-        QObject::connect(serialPort_.get(), &QSerialPort::readyRead, this, [this]() -> void {
+    (ready)
+        ? QObject::connect(serialPort_.get(), &QSerialPort::readyRead, this, [this]() -> void {
             emit messageRecieved(serialPort_->recieve(serialPort_->bytesAvailable()));
-        });
-    else
-        QObject::disconnect(serialPort_.get(), &QSerialPort::readyRead, nullptr, nullptr);
+        })
+        : QObject::disconnect(serialPort_.get(), &QSerialPort::readyRead, nullptr, nullptr);
 }
 
-Arduino::Arduino() noexcept
-    : QObject(nullptr)
-    , serialPort_(nullptr)
+Arduino::Arduino()
+    : QObject{nullptr}
+    , serialPort_{nullptr}
 {}
 
-Arduino::~Arduino() noexcept {}
+Arduino::~Arduino() {}
 
 void Arduino::errorHandler(const QString &error)
 {

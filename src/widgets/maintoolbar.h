@@ -12,8 +12,8 @@ class MainToolBar : public QToolBar
     Q_OBJECT
 
 public:
-    explicit MainToolBar(QWidget *parent = nullptr) noexcept;
-    ~MainToolBar() noexcept = default;
+    explicit MainToolBar(QWidget *parent = nullptr);
+    ~MainToolBar() = default;
 
 private:
     BaudRateComboBox *baudRateComboBox_;

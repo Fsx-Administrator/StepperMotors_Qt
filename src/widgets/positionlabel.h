@@ -11,11 +11,11 @@ class PositionLabel : public QWidget
     Q_OBJECT
 
 public:
-    explicit PositionLabel(QWidget *parent = nullptr) noexcept;
-    ~PositionLabel() noexcept;
+    explicit PositionLabel(QWidget *parent = nullptr);
+    ~PositionLabel();
 
 public slots:
-    void setPosition(const QPointF &position) noexcept;
+    void setPosition(const QPointF &position);
 
 private:
     QLabel *xPositionLabel_;

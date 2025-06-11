@@ -38,7 +38,7 @@ public:
     MetricPrefix &operator=(const MetricPrefix &) = delete;
     MetricPrefix &operator=(MetricPrefix &&) = delete;
 
-    [[nodiscard]] static constexpr double multiplier(const MetricPrefixes metricPrefix) noexcept;
+    [[nodiscard]] static constexpr double multiplier(const MetricPrefixes metricPrefix);
     [[nodiscard]] static QString toString(const MetricPrefixes metricPrefix);
 
 private:

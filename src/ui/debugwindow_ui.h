@@ -13,7 +13,7 @@ class DebugWindow_Ui
 
 public:
     explicit DebugWindow_Ui(DebugWindow *parent);
-    ~DebugWindow_Ui() noexcept = default;
+    ~DebugWindow_Ui() = default;
 
     DebugWindow_Ui(const DebugWindow_Ui &) = delete;
     DebugWindow_Ui(DebugWindow_Ui &&) = delete;

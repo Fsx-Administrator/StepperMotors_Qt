@@ -8,13 +8,13 @@ class DebugConsole : public QTextEdit
     Q_OBJECT
 
 public:
-    explicit DebugConsole(QWidget *parent = nullptr) noexcept;
-    virtual ~DebugConsole() noexcept = default;
+    explicit DebugConsole(QWidget *parent = nullptr);
+    virtual ~DebugConsole() = default;
 
 public slots:
-    void appendAnswer(const QString &answer) noexcept;
-    void appendRequest(const QString &request) noexcept;
-    void appendSection(const QString &section) noexcept;
+    void appendAnswer(const QString &answer);
+    void appendRequest(const QString &request);
+    void appendSection(const QString &section);
 
 private:
     const QString _ANSWER_TEMPLATE_;

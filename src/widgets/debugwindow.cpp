@@ -4,7 +4,7 @@
 #include "arduinowithsteppers.h"
 
 
-DebugWindow::DebugWindow(QWidget *parent) noexcept
+DebugWindow::DebugWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new DebugWindow_Ui(this))
 {
@@ -22,4 +22,4 @@ DebugWindow::DebugWindow(QWidget *parent) noexcept
     });
 }
 
-DebugWindow::~DebugWindow() noexcept {}
+DebugWindow::~DebugWindow() {}

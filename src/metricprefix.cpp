@@ -124,7 +124,7 @@ MetricPrefixes operator--(MetricPrefixes &metricPrefix, int)
 
 MetricPrefixesMap MetricPrefix::prefixes_ = MetricPrefixesMap();
 
-constexpr double MetricPrefix::multiplier(const MetricPrefixes metricPrefix) noexcept
+constexpr double MetricPrefix::multiplier(const MetricPrefixes metricPrefix)
 {
     return std::pow(10, std::to_underlying(metricPrefix));
 }

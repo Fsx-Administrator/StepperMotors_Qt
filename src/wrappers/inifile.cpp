@@ -37,13 +37,13 @@ SettingsMap IniFile::read(const QString &sectionName) const
     return settingsMap;
 }
 
-void IniFile::write(const SectionsMap &sectionsMap) noexcept
+void IniFile::write(const SectionsMap &sectionsMap)
 {
     for (const auto &section : sectionsMap)
         write(sectionsMap.key(section), section);
 }
 
-void IniFile::write(const QString &sectionName, const SettingsMap &settingsMap) noexcept
+void IniFile::write(const QString &sectionName, const SettingsMap &settingsMap)
 {
     settings_->beginGroup(sectionName);
 

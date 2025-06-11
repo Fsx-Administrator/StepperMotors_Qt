@@ -19,13 +19,13 @@ public:
         Up
     };
 
-    explicit MoveTrackerWidget(QWidget *parent = nullptr) noexcept;
-    ~MoveTrackerWidget() noexcept;
+    explicit MoveTrackerWidget(QWidget *parent = nullptr);
+    ~MoveTrackerWidget();
 
-    // void move(const double step, const Direction dir) noexcept;
-    void setAspectRatio(const double aspectRatio) noexcept;
-    void setPosition(const QPointF &destination) noexcept;
-    void setRange(const QSizeF &size) noexcept;
+    // void move(const double step, const Direction dir);
+    void setAspectRatio(double aspectRatio);
+    void setPosition(const QPointF &destination);
+    void setRange(const QSizeF &size);
 
 private:
     const QSize _MINIMUM_SIZE_;

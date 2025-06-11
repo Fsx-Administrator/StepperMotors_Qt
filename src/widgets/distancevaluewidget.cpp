@@ -8,7 +8,7 @@
 #include <QPushButton>
 
 
-DistanceValueWidget::DistanceValueWidget(QWidget *parent) noexcept
+DistanceValueWidget::DistanceValueWidget(QWidget *parent)
     : QWidget(parent)
     , arduinoMeterDoubleSpinBox_(new ArduinoMeterDoubleSpinBox(this))
 {
@@ -36,7 +36,7 @@ DistanceValueWidget::DistanceValueWidget(QWidget *parent) noexcept
 
     connect(&buttons_, &QButtonGroup::idClicked, this, [this](int id) -> void {
         arduinoMeterDoubleSpinBox_->setMainValue(
-            Limiter::limitedValue(
+            Limiter{}(
                 arduinoMeterDoubleSpinBox_->mainValue() + buttonDistance(id),
                 0.0,
                 std::max(ArduinoParameters::maxInUm(Qt::XAxis), ArduinoParameters::maxInUm(Qt::YAxis))
@@ -45,7 +45,7 @@ DistanceValueWidget::DistanceValueWidget(QWidget *parent) noexcept
     });
     connect(arduinoMeterDoubleSpinBox_, &QDoubleSpinBox::valueChanged, this, [this]() -> void {
         arduinoMeterDoubleSpinBox_->setMainValue(
-            Limiter::limitedValue(
+            Limiter{}(
                 arduinoMeterDoubleSpinBox_->mainValue(),
                 0.0,
                 std::max(ArduinoParameters::maxInUm(Qt::XAxis), ArduinoParameters::maxInUm(Qt::YAxis))
@@ -59,7 +59,7 @@ double DistanceValueWidget::distance() const noexcept
     return arduinoMeterDoubleSpinBox_->mainValue();
 }
 
-void DistanceValueWidget::setDistance(const double value) noexcept
+void DistanceValueWidget::setDistance(const double value)
 {
     arduinoMeterDoubleSpinBox_->setMainValue(value);
 }

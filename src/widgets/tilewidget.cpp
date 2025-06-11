@@ -4,7 +4,7 @@
 #include <QPushButton>
 
 
-TileWidget::TileWidget(QWidget *parent) noexcept
+TileWidget::TileWidget(QWidget *parent)
     : QWidget(parent)
 {
     QGridLayout *layout = new QGridLayout(this);
@@ -24,7 +24,7 @@ QPushButton *TileWidget::button(const Place place) const noexcept
     return nullptr;
 }
 
-void TileWidget::setButton(const Place place, const QString &name, Slot slot) noexcept
+void TileWidget::setButton(const Place place, const QString &name, Slot slot)
 {
     auto b = button(place);
 

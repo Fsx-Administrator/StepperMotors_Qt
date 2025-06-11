@@ -8,8 +8,8 @@ class PortNameComboBox : public QComboBox
     Q_OBJECT
 
 public:
-    explicit PortNameComboBox(QWidget *parent = nullptr) noexcept;
-    ~PortNameComboBox() noexcept;
+    explicit PortNameComboBox(QWidget *parent = nullptr);
+    ~PortNameComboBox();
 
     [[nodiscard]] QString currentPortName() const noexcept;
 
@@ -17,7 +17,7 @@ protected:
     void timerEvent(QTimerEvent *event) override;
 
 private slots:
-    void refresh() noexcept;
+    void refresh();
 
 private:
     const int _REFRESH_TIMEOUT_;

@@ -29,42 +29,44 @@ public:
         const QString &name,
         const qint32 baudRate
     );
-    virtual ~SerialPort() noexcept;
+    virtual ~SerialPort();
 
     SerialPort(const SerialPort &) = delete;
     SerialPort(SerialPort &&) = delete;
     SerialPort &operator=(const SerialPort &) = delete;
     SerialPort &operator=(SerialPort &&) = delete;
 
-    [[nodiscard]] QByteArray recieve(const std::size_t size) noexcept
+    [[nodiscard]] QByteArray recieve(std::size_t size)
     {
         return read(size);
     }
 
     template<Pointer T>
-    [[nodiscard]] T recieve(const std::size_t size) noexcept
+    [[nodiscard]] T recieve(std::size_t size)
     {
         const auto byteArray = recieve(size);
         return reinterpret_cast<T>(byteArray.data());
     }
 
     template<BuiltInType T>
-    [[nodiscard]] T recieve() noexcept
+    [[nodiscard]] T recieve()
     {
         return *recieve<T *>(sizeof(T));
     }
 
-    void send(const QByteArray data) noexcept
+    void send(const QByteArray &data)
     {
+        clear(Output);
         write(data);
+        waitForBytesWritten(100);
     }
 
-    void send(const Pointer auto data, const std::size_t size) noexcept
+    void send(const Pointer auto data, std::size_t size)
     {
-        send(QByteArray(reinterpret_cast<const char *>(data), size));
+        send(QByteArray{reinterpret_cast<const char *>(data), static_cast<qsizetype>(size)});
     }
 
-    void send(const BuiltInType auto data) noexcept
+    void send(BuiltInType auto data)
     {
         send(&data, sizeof(data));
     }

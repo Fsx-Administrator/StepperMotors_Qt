@@ -8,7 +8,7 @@ class ArduinoMeterDoubleSpinBox final : public MeterDoubleSpinBox
 {
 
 public:
-    explicit ArduinoMeterDoubleSpinBox(QWidget *parent = nullptr) noexcept
+    explicit ArduinoMeterDoubleSpinBox(QWidget *parent = nullptr)
         : MeterDoubleSpinBox(parent)
     {
         setMaxPrefix(MetricPrefixes::Milli);
@@ -17,6 +17,6 @@ public:
         setMainPrefix(MetricPrefixes::Micro);
         setMainValueStep(ArduinoWithSteppers::instance().step());
     }
-    ~ArduinoMeterDoubleSpinBox() noexcept = default;
+    ~ArduinoMeterDoubleSpinBox() = default;
 
 };

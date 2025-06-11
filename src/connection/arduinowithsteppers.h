@@ -47,8 +47,8 @@ private:
         Stop        = 's'
     };
 
-    ArduinoWithSteppers() noexcept;
-    ~ArduinoWithSteppers() noexcept;
+    ArduinoWithSteppers();
+    ~ArduinoWithSteppers();
 
     [[nodiscard]] QString positionsAsString() const noexcept;
 

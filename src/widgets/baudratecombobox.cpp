@@ -5,7 +5,7 @@
 #include <QSerialPort>
 
 
-BaudRateComboBox::BaudRateComboBox(QWidget *parent) noexcept
+BaudRateComboBox::BaudRateComboBox(QWidget *parent)
     : QComboBox(parent)
     , settings_(std::make_unique<WidgetSettings>(this))
 {
@@ -26,7 +26,7 @@ BaudRateComboBox::BaudRateComboBox(QWidget *parent) noexcept
         setCurrentIndex(settings_->get<int>("index"));
 }
 
-BaudRateComboBox::~BaudRateComboBox() noexcept
+BaudRateComboBox::~BaudRateComboBox()
 {
     if (settings_ != nullptr)
         settings_->set("index", currentIndex());
@@ -37,7 +37,7 @@ quint32 BaudRateComboBox::currentBaudRate() const noexcept
     return currentText().toInt();
 }
 
-void BaudRateComboBox::setCurrentBaudRate(const quint32 baudRate) noexcept
+void BaudRateComboBox::setCurrentBaudRate(const quint32 baudRate)
 {
     setCurrentText(QString::number(baudRate));
 }

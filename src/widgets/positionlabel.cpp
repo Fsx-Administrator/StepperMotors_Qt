@@ -7,7 +7,7 @@
 #include <QVBoxLayout>
 
 
-PositionLabel::PositionLabel(QWidget *parent) noexcept
+PositionLabel::PositionLabel(QWidget *parent)
     : QWidget(parent)
     , xPositionLabel_(new QLabel(this))
     , yPositionLabel_(new QLabel(this))
@@ -19,11 +19,11 @@ PositionLabel::PositionLabel(QWidget *parent) noexcept
     setLayout(layout);
 }
 
-PositionLabel::~PositionLabel() noexcept {}
+PositionLabel::~PositionLabel() {}
 
-void PositionLabel::setPosition(const QPointF &position) noexcept
+void PositionLabel::setPosition(const QPointF &position)
 {
     position_ = position;
     xPositionLabel_->setText(_X_POSITION_LABEL_PATTERN_.arg(QString::number(position.x()), QString::number(ArduinoParameters::maxInUm(Qt::XAxis))));
-    yPositionLabel_->setText(_Y_POSITION_LABEL_PATTERN_.arg(QString::number(position.y()), QString::number(-ArduinoParameters::maxInUm(Qt::YAxis))));
+    yPositionLabel_->setText(_Y_POSITION_LABEL_PATTERN_.arg(QString::number(position.y()), QString::number(ArduinoParameters::maxInUm(Qt::YAxis))));
 }

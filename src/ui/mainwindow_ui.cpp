@@ -3,7 +3,7 @@
 #include <QGridLayout>
 
 
-MainWindow_Ui::MainWindow_Ui(MainWindow *parent) noexcept
+MainWindow_Ui::MainWindow_Ui(MainWindow *parent)
     : mainToolBar(new MainToolBar(parent))
     , distanceValueWidget(new DistanceValueWidget(parent))
     , knobWidget(new KnobWidget(parent))

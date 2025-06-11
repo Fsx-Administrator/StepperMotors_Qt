@@ -7,15 +7,15 @@ class Limiter
 {
 
 public:
-    Limiter() = delete;
-    ~Limiter() = delete;
+    Limiter() = default;
+    ~Limiter() = default;
 
     Limiter(const Limiter &) = delete;
     Limiter(Limiter &&) = delete;
     Limiter &operator=(const Limiter &) = delete;
     Limiter &operator=(Limiter &&) = delete;
 
-    [[nodiscard]] static inline auto limitedValue(
+    [[nodiscard]] inline auto operator()(
         const BuiltInType auto value,
         const BuiltInType auto min,
         const BuiltInType auto max

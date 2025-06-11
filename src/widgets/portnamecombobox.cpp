@@ -6,13 +6,13 @@
 #include <QTimerEvent>
 
 
-PortNameComboBox::PortNameComboBox(QWidget *parent) noexcept
+PortNameComboBox::PortNameComboBox(QWidget *parent)
     : QComboBox(parent)
     , _REFRESH_TIMEOUT_(2000)
     , refreshTimerId_(startTimer(_REFRESH_TIMEOUT_))
 {}
 
-PortNameComboBox::~PortNameComboBox() noexcept
+PortNameComboBox::~PortNameComboBox()
 {
     killTimer(refreshTimerId_);
 }
@@ -28,7 +28,7 @@ void PortNameComboBox::timerEvent(QTimerEvent *event)
         refresh();
 }
 
-void PortNameComboBox::refresh() noexcept
+void PortNameComboBox::refresh()
 {
     const auto lastIndex = currentIndex();
     int maxLength = 0;

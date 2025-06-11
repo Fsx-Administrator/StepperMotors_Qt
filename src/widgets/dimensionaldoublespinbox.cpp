@@ -2,13 +2,15 @@
 
 #include "arithmetic.h"
 
+#include <QEvent>
 
-DimensionalDoubleSpinBox::DimensionalDoubleSpinBox(QWidget *parent) noexcept
-    : QDoubleSpinBox(parent)
-    , _SINGLE_STEP_(0.01)
-    , _DECIMALS_(2)
-    , maxValue_(10000.0)
-    , valueStep_(0.001)
+
+DimensionalDoubleSpinBox::DimensionalDoubleSpinBox(QWidget *parent)
+    : QDoubleSpinBox{parent}
+    , _SINGLE_STEP_{0.01}
+    , _DECIMALS_{2}
+    , maxValue_{10000.0}
+    , valueStep_{0.001}
 {
     setMinPrefix(MetricPrefixes::Femto);
     setMaxPrefix(MetricPrefixes::Peta);
@@ -24,67 +26,90 @@ DimensionalDoubleSpinBox::DimensionalDoubleSpinBox(QWidget *parent) noexcept
     connect(this, &QDoubleSpinBox::valueChanged, this, &DimensionalDoubleSpinBox::setMetricValue);
 }
 
-double DimensionalDoubleSpinBox::mainValue() const noexcept
+double DimensionalDoubleSpinBox::mainValue() const
 {
     return metricValue(mainPrefix_);
 }
 
-double DimensionalDoubleSpinBox::metricValue(const MetricPrefixes metricPrefix) const noexcept
+QString DimensionalDoubleSpinBox::metricSuffix() const
 {
-    return Arithmetic::nearestFloating(value() * std::pow(10, std::to_underlying(currentPrefix_) - std::to_underlying(metricPrefix)), mainStep());
+    // qDebug() << suffix() << suffix().remove(" ");
+    return suffix().remove(" ");
 }
 
-void DimensionalDoubleSpinBox::setMaxMetricValue(const double value) noexcept
+double DimensionalDoubleSpinBox::metricValue(MetricPrefixes prefix) const
+{
+    return Arithmetic::nearestFloating(value() * std::pow(10.0, std::to_underlying(currentPrefix_) - std::to_underlying(prefix)), metricStep(prefix));
+}
+
+void DimensionalDoubleSpinBox::setMaxMetricValue(double value)
 {
     maxValue_ = value;
     setMaxMetricValue();
 }
 
-void DimensionalDoubleSpinBox::setMainValue(const double value) noexcept
+void DimensionalDoubleSpinBox::setMainValue(double value)
 {
     currentPrefix_ = mainPrefix_;
     setMetricValue(value);
 }
 
-void DimensionalDoubleSpinBox::setMetricSuffix(const QString &suffix) noexcept
+void DimensionalDoubleSpinBox::setMetricSuffix(const QString &suffix)
 {
     suffix_ = suffix;
     setMetricSuffix();
 }
 
-void DimensionalDoubleSpinBox::setMetricValue(const double metricValue) noexcept
+void DimensionalDoubleSpinBox::setMetricValue(double value)
 {
-    const double ABS_VALUE = std::abs(metricValue);
+    const double ABS_VALUE = std::abs(value);
 
     if (Arithmetic::isEqualToZero(ABS_VALUE))
+    {
+        setValue(0.0);
         return;
+    }
 
     if (ABS_VALUE >= 1000.0 && currentPrefix_ != maxPrefix_)
     {
         ++currentPrefix_;
         setMaxMetricValue();
-        setMetricValue(metricValue * 0.001);
+        setMetricValue(value * 0.001);
     }
     else if (ABS_VALUE < 1.0 && currentPrefix_ != minPrefix_)
     {
         --currentPrefix_;
-        setMetricValue(metricValue * 1000.0);
+        setMaxMetricValue();
+        setMetricValue(value * 1000.0);
     }
     else
     {
-        setSingleStep(std::max(_SINGLE_STEP_, mainStep()));
-        setValue(Arithmetic::nearestFloating(metricValue, mainStep()));
+        setSingleStep(std::max(_SINGLE_STEP_, metricStep(currentPrefix_)));
+        setValue(Arithmetic::nearestFloating(value, metricStep(currentPrefix_)));
     }
 
     setMetricSuffix();
 }
 
-double DimensionalDoubleSpinBox::mainStep() const noexcept
+bool DimensionalDoubleSpinBox::event(QEvent *event)
 {
-    return valueStep_ * std::pow(10, std::to_underlying(mainPrefix_) - std::to_underlying(currentPrefix_));
+    if (event->type() == QEvent::LanguageChange)
+        translate();
+
+    return QWidget::event(event);
 }
 
-void DimensionalDoubleSpinBox::setMaxMetricValue() noexcept
+double DimensionalDoubleSpinBox::mainStep() const
+{
+    return metricStep(mainPrefix_);
+}
+
+double DimensionalDoubleSpinBox::metricStep(MetricPrefixes prefix) const
+{
+    return valueStep_ * std::pow(10.0, std::to_underlying(mainPrefix_) - std::to_underlying(prefix));
+}
+
+void DimensionalDoubleSpinBox::setMaxMetricValue()
 {
     if (currentPrefix_ == maxPrefix_)
         setMaximum(maxValue_);
@@ -92,7 +117,7 @@ void DimensionalDoubleSpinBox::setMaxMetricValue() noexcept
         setMaximum(10000.0);
 }
 
-void DimensionalDoubleSpinBox::setMetricSuffix() noexcept
+void DimensionalDoubleSpinBox::setMetricSuffix()
 {
     setSuffix(" " + MetricPrefix::toString(currentPrefix_) + suffix_);
 }

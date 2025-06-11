@@ -25,11 +25,11 @@ public:
         BottomRight
     };
 
-    explicit TileWidget(QWidget *parent = nullptr) noexcept;
-    virtual ~TileWidget() noexcept = default;
+    explicit TileWidget(QWidget *parent = nullptr);
+    virtual ~TileWidget() = default;
 
     [[nodiscard]] QPushButton *button(const Place place) const noexcept;
-    virtual void setButton(const Place place, const QString &name, Slot slot) noexcept;
+    virtual void setButton(const Place place, const QString &name, Slot slot);
 
 private:
     [[nodiscard]] QPair<unsigned, unsigned> buttonPlace(const Place place) const;

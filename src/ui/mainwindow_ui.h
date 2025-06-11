@@ -15,8 +15,8 @@ class MainWindow_Ui
 {
 
 public:
-    explicit MainWindow_Ui(MainWindow *parent) noexcept;
-    ~MainWindow_Ui() noexcept = default;
+    explicit MainWindow_Ui(MainWindow *parent);
+    ~MainWindow_Ui() = default;
 
     MainWindow_Ui(const MainWindow_Ui &) = delete;
     MainWindow_Ui(MainWindow_Ui &&) = delete;

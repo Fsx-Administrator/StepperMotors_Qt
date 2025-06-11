@@ -11,8 +11,8 @@ class DebugWindow final : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit DebugWindow(QWidget *parent = nullptr) noexcept;
-    ~DebugWindow() noexcept;
+    explicit DebugWindow(QWidget *parent = nullptr);
+    ~DebugWindow();
 
 signals:
     void messageSent(const QString &message);

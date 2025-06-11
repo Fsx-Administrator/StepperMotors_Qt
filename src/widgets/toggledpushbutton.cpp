@@ -7,7 +7,7 @@ ToggledPushButton::ToggledPushButton(
     const QString &offTitle,
     Slot onSlot,
     Slot offSlot
-) noexcept
+)
     : QPushButton(parent)
 {
     setCheckable(true);

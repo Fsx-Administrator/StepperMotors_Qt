@@ -10,11 +10,11 @@ class BaudRateComboBox : public QComboBox
     Q_OBJECT
 
 public:
-    explicit BaudRateComboBox(QWidget *parent = nullptr) noexcept;
-    ~BaudRateComboBox() noexcept;
+    explicit BaudRateComboBox(QWidget *parent = nullptr);
+    ~BaudRateComboBox();
 
     [[nodiscard]] quint32 currentBaudRate() const noexcept;
-    void setCurrentBaudRate(const quint32 baudRate) noexcept;
+    void setCurrentBaudRate(const quint32 baudRate);
 
 signals:
     void baudRateChanged(const quint32 baudRate);

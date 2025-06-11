@@ -85,7 +85,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 ############################################# Установка dll-файлов ##############################################
 
-set(QT_DLL_PATH C:/Qt/6.7.2/mingw_64)
+set(QT_DLL_PATH C:/Qt/6.9.1/mingw_64)
 
 install(FILES
     ${QWT_ROOT}/lib/qwt.dll

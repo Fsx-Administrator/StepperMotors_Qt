@@ -22,8 +22,8 @@ public:
 
     SectionsMap read() const;
     SettingsMap read(const QString &sectionName) const;
-    void write(const SectionsMap &sectionsMap) noexcept;
-    void write(const QString &sectionName, const SettingsMap &settingsMap) noexcept;
+    void write(const SectionsMap &sectionsMap);
+    void write(const QString &sectionName, const SettingsMap &settingsMap);
 
 private:
     std::unique_ptr<QSettings> settings_;

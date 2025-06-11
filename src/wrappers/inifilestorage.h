@@ -7,7 +7,7 @@ class IniFileStorage
 {
 
 public:
-    IniFileStorage() noexcept = delete;
+    IniFileStorage() = delete;
     IniFileStorage(const IniFileStorage &) = delete;
     IniFileStorage(IniFileStorage &&) = delete;
     ~IniFileStorage() = delete;

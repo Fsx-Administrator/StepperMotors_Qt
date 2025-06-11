@@ -8,10 +8,10 @@ class KnobWidget final : public TileWidget
     Q_OBJECT
 
 public:
-    explicit KnobWidget(QWidget *parent = nullptr) noexcept;
-    ~KnobWidget() noexcept = default;
+    explicit KnobWidget(QWidget *parent = nullptr);
+    ~KnobWidget() = default;
 
-    void setButton(const Place place, const QString &name, Slot slot) noexcept override;
+    void setButton(const Place place, const QString &name, Slot slot) override;
 
 private:
     [[nodiscard]] QIcon knobIcon(const Place place) const noexcept;

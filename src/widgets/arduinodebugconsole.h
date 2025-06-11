@@ -8,18 +8,18 @@ class ArduinoDebugConsole final : public DebugConsole
     Q_OBJECT
 
 public:
-    explicit ArduinoDebugConsole(QWidget *parent = nullptr) noexcept
+    explicit ArduinoDebugConsole(QWidget *parent = nullptr)
         : DebugConsole(parent)
     {}
-    ~ArduinoDebugConsole() noexcept = default;
+    ~ArduinoDebugConsole() = default;
 
 public slots:
-    void appendConnectSection() noexcept
+    void appendConnectSection()
     {
         appendSection("Connected");
     }
 
-    void appendDisconnectSection() noexcept
+    void appendDisconnectSection()
     {
         appendSection("Disconnected");
     }

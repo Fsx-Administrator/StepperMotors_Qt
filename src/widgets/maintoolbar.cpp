@@ -6,7 +6,7 @@
 #include "toggledpushbutton.h"
 
 
-MainToolBar::MainToolBar(QWidget *parent) noexcept
+MainToolBar::MainToolBar(QWidget *parent)
     : baudRateComboBox_(new BaudRateComboBox(parent))
     , portNameComboBox_(new PortNameComboBox(parent))
     , connectToggledPushButton_(new ToggledPushButton(

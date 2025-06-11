@@ -10,26 +10,32 @@ class DimensionalDoubleSpinBox : public QDoubleSpinBox
     Q_OBJECT
 
 public:
-    explicit DimensionalDoubleSpinBox(QWidget *parent = nullptr) noexcept;
-    virtual ~DimensionalDoubleSpinBox() noexcept = default;
+    explicit DimensionalDoubleSpinBox(QWidget *parent = nullptr);
+    virtual ~DimensionalDoubleSpinBox() = default;
 
-    [[nodiscard]] double mainValue() const noexcept;
-    [[nodiscard]] double metricValue(const MetricPrefixes metricPrefix) const noexcept;
-    inline void setCurrentPrefix(const MetricPrefixes prefix) noexcept
+    [[nodiscard]] double mainValue() const;
+    [[nodiscard]] QString metricSuffix() const;
+    [[nodiscard]] double metricValue(MetricPrefixes prefix) const;
+    inline void setCurrentPrefix(MetricPrefixes prefix)
     { currentPrefix_ = (prefix > maxPrefix_) ? maxPrefix_ : prefix; setMetricSuffix(); }
-    void setMaxMetricValue(const double value) noexcept;
-    inline void setMaxPrefix(const MetricPrefixes prefix) noexcept { maxPrefix_ = prefix; }
-    inline void setMainPrefix(const MetricPrefixes prefix) noexcept { mainPrefix_ = prefix; }
-    void setMainValue(const double value) noexcept;
-    inline void setMainValueStep(const double step) noexcept { valueStep_ = step; }
-    void setMetricSuffix(const QString &suffix) noexcept;
-    void setMetricValue(const double metricValue) noexcept;
-    inline void setMinPrefix(const MetricPrefixes prefix) noexcept { minPrefix_ = prefix; }
+    void setMaxMetricValue(double value);
+    inline void setMaxPrefix(MetricPrefixes prefix) { maxPrefix_ = prefix; }
+    inline void setMainPrefix(MetricPrefixes prefix) { mainPrefix_ = prefix; }
+    void setMainValue(double value);
+    inline void setMainValueStep(double step) { valueStep_ = step; }
+    void setMetricSuffix(const QString &suffix);
+    void setMetricValue(double value);
+    inline void setMinPrefix(MetricPrefixes prefix) { minPrefix_ = prefix; }
+	
+protected:
+	virtual bool event(QEvent *event) override;
+    virtual void translate() {}
 
 private:
-    [[nodiscard]] double mainStep() const noexcept;
-    void setMaxMetricValue() noexcept;
-    void setMetricSuffix() noexcept;
+    [[nodiscard]] double mainStep() const;
+    [[nodiscard]] double metricStep(MetricPrefixes prefix) const;
+    void setMaxMetricValue();
+    void setMetricSuffix();
 
     const double _SINGLE_STEP_;
     const int _DECIMALS_;
@@ -43,5 +49,3 @@ private:
     double valueStep_;
 
 };
-
-

@@ -16,7 +16,7 @@ public:
         const QString &offTitle = QString(),
         Slot onSlot = []() -> void {},
         Slot offSlot = []() -> void {}
-    ) noexcept;
-    ~ToggledPushButton() noexcept = default;
+    );
+    ~ToggledPushButton() = default;
 
 };

@@ -3,7 +3,7 @@
 #include <QPushButton>
 
 
-KnobWidget::KnobWidget(QWidget *parent) noexcept
+KnobWidget::KnobWidget(QWidget *parent)
     : TileWidget(parent)
     , icons_({
         { Place::TopLeft, ":/icons/manual_calibrate.png" },
@@ -17,7 +17,7 @@ KnobWidget::KnobWidget(QWidget *parent) noexcept
     })
 {}
 
-void KnobWidget::setButton(const Place place, const QString &name, Slot slot) noexcept
+void KnobWidget::setButton(const Place place, const QString &name, Slot slot)
 {
     TileWidget::setButton(place, name, slot);
     button(place)->setIcon(knobIcon(place));
